@@ -4,15 +4,15 @@ from pymongo.errors import ServerSelectionTimeoutError
 from cryptomodel.cryptostore import user_channel, user_transaction, user_notification
 from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates
-from dataaccess.config import configure_app
-from dataaccess.Repository import Repository
+from cryptodataaccess.config import configure_app
+from cryptodataaccess.Repository import Repository
 import pytest
-from dataaccess.helpers import do_connect
+from cryptodataaccess.helpers import do_connect
 from tests.helpers import insert_prices_record, insert_exchange_record
 
 @pytest.fixture(scope='module')
 def mock_log():
-    with mock.patch("dataaccess.helpers.log_error"
+    with mock.patch("cryptodataaccess.helpers.log_error"
                     ) as _mock:
         _mock.return_value = True
         yield _mock
@@ -71,10 +71,10 @@ def test_insert_user_channel():
 
 
 def test_log_when_do_connect_raises_exception(mock_log):
-    with mock.patch("dataaccess.helpers.do_connect"
+    with mock.patch("cryptodataaccess.helpers.do_connect"
                     ) as _mock:
         _mock.side_effect = ServerSelectionTimeoutError("hi")
-        with mock.patch("dataaccess.helpers.log_error") as log:
+        with mock.patch("cryptodataaccess.helpers.log_error") as log:
             with pytest.raises(ServerSelectionTimeoutError):
                 repo = Repository(configure_app(), mock_log)
                 repo.insert_user_channel(1, "telegram", chat_id="1")

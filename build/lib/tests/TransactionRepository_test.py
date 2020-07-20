@@ -1,14 +1,14 @@
 import mock
 from bson import ObjectId
 from cryptomodel.cryptostore import user_channel, user_transaction, user_notification
-from dataaccess.config import configure_app
-from dataaccess.TransactionRepository import TransactionRepository
+from cryptodataaccess.config import configure_app
+from cryptodataaccess.TransactionRepository import TransactionRepository
 import pytest
-from dataaccess.helpers import do_connect
+from cryptodataaccess.helpers import do_connect
 
 @pytest.fixture(scope='module')
 def mock_log():
-    with mock.patch("dataaccess.helpers.log_error"
+    with mock.patch("cryptodataaccess.helpers.log_error"
                     ) as _mock:
         _mock.return_value = True
         yield _mock

@@ -1,7 +1,7 @@
 import json
 import pymongo
-from dataaccess.helpers import get_url
-from dataaccess.config import configure_app
+from cryptodataaccess.helpers import get_url
+from cryptodataaccess.config import configure_app
 import pytest
 import mock
 
