@@ -81,39 +81,6 @@ def test_log_when_do_connect_raises_exception(mock_log):
             mock_log.assert_called()
 
 
-def test_insert_transaction():
-    config = configure_app()
-    repo = Repository(config, mock_log)
-    do_connect(config)
-    user_transaction.objects.all().delete()
-    ut = repo.insert_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken")
-    assert (ut.user_id == 1)
-    assert (ut.symbol == "OXT")
-    assert (len(user_transaction.objects) == 1)
-
-
-def test_update_transaction():
-    config = configure_app()
-    repo = Repository(config, mock_log)
-    do_connect(config)
-    user_transaction.objects.all().delete()
-    ut = repo.insert_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken")
-    ut = repo.update_transaction(ut.id, 1, 1, 'OXT2', 1, 1, "EUR", "2020-01-01", "kraken")
-    assert (ut.user_id == 1)
-    assert (ut.symbol == "OXT2")
-    assert (ut.currency == "EUR")
-
-
-def test_update_transaction_when_does_not_exist_throws_ValueError():
-    config = configure_app()
-    repo = Repository(config, mock_log)
-    do_connect(config)
-    user_transaction.objects.all().delete()
-    with pytest.raises(ValueError):
-        repo.update_transaction(ObjectId('666f6f2d6261722d71757578'), 1, 1, 'OXT', "EUR", 1, 1, "2020-01-01",
-                                     "kraken")
-
-
 def test_update_notification_when_does_not_exist_throws_ValueError():
     config = configure_app()
     repo = Repository(config, mock_log)
@@ -137,23 +104,7 @@ def test_update_notification():
     assert (un.user_name == "nik2")
 
 
-def test_delete_transaction_when_does_not_exist_throws_ValueError():
-    config = configure_app()
-    repo = Repository(config, mock_log)
-    do_connect(config)
-    user_transaction.objects.all().delete()
-    with pytest.raises(ValueError):
-        repo.delete_transaction(ObjectId('666f6f2d6261722d71757578'))
 
-
-def test_delete_transaction_when_exists():
-    config = configure_app()
-    repo = Repository(config, mock_log)
-    do_connect(config)
-    ut = repo.insert_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken")
-    assert (len(user_transaction.objects) == 1)
-    ut = repo.delete_transaction(ut.id)
-    assert (len(user_transaction.objects) == 0)
 
 
 def test_delete_notification_when_exists():
