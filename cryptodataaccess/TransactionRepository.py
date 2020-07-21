@@ -40,6 +40,17 @@ class TransactionRepository:
         if trans is not None:
             trans.delete()
 
+    def delete_transaction_by_source_id(self, source_id, throw_if_does_not_exist=True):
+        helpers.server_time_out_wrapper(self, self.do_delete_transaction, source_id, throw_if_does_not_exist)
+
+    def do_delete_transaction_by_source_id(self, source_id, throw_if_does_not_exist=True):
+        helpers.do_connect(self.configuration)
+        trans = user_transaction.objects(source_id=source_id).first()
+        if throw_if_does_not_exist:
+            if_none_raise_with_id(id, trans)
+        if trans is not None:
+            trans.delete()
+
     def do_update_transaction(self, id, user_id, volume, symbol, value, price, currency, date, source, source_id,
                               operation):
         helpers.do_connect(self.configuration)
