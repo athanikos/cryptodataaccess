@@ -1,10 +1,7 @@
-from datetime import datetime
-from cryptomodel.readonly import SymbolRates
+
+
 from mongoengine import Q
-from cryptomodel.coinmarket import prices
-from cryptomodel.fixer import exchange_rates
 from cryptomodel.cryptostore import user_notification, user_channel, user_transaction, operation_type
-from cryptomodel.readonly import SymbolRates
 from cryptomodel.cryptostore import user_settings
 from cryptodataaccess import helpers
 from cryptodataaccess.helpers import if_none_raise, if_none_raise_with_id
@@ -17,38 +14,6 @@ class Repository:
     def __init__(self, config, log_error):
         self.configuration = config
         self.log_error = log_error
-
-    def fetch_symbols(self):
-        symbols = {}
-        latest_prices = self.fetch_latest_prices_to_date(datetime.today().strftime(DATE_FORMAT))
-        for coin in latest_prices[0].coins:
-            symbols.update({coin.symbol: coin.name})
-        return symbols
-
-    def fetch_symbol_rates(self):
-        dt_now = datetime.today().strftime(DATE_FORMAT)
-        srs = SymbolRates(dt_now)
-        latest_prices = self.fetch_latest_prices_to_date(dt_now)
-        for coin in latest_prices[0].coins:
-            srs.add_rate(coin.symbol, coin.quote.eur)
-        return srs
-
-    def fetch_latest_prices_to_date(self, before_date):
-        return helpers.server_time_out_wrapper(self, self.do_fetch_latest_prices_to_date, before_date)
-
-    def fetch_latest_exchange_rates_to_date(self, before_date):
-        return helpers.server_time_out_wrapper(self, self.do_fetch_latest_exchange_rates_to_date, before_date)
-
-
-    def do_fetch_latest_prices_to_date(self, before_date):
-        helpers.do_connect(self.configuration)
-        return prices.objects(Q(status__timestamp__lte=before_date)).order_by(
-            '-status__timestamp')[:10]
-
-    def do_fetch_latest_exchange_rates_to_date(self, before_date):
-        helpers. do_connect(self.configuration)
-        return exchange_rates.objects(Q(date__lte=before_date)).order_by(
-            'date-')[:1]
 
     def fetch_user_channels(self, user_id):
         return helpers.server_time_out_wrapper(self, self.do_fetch_user_channels, user_id)
