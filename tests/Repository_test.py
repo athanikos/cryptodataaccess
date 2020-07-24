@@ -6,9 +6,11 @@ from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates
 from cryptodataaccess.config import configure_app
 from cryptodataaccess.Repository import Repository
+from cryptodataaccess.RatesRepository import RatesRepository
 import pytest
 from cryptodataaccess.helpers import do_connect
 from tests.helpers import insert_prices_record, insert_exchange_record
+
 
 @pytest.fixture(scope='module')
 def mock_log():
@@ -20,18 +22,18 @@ def mock_log():
 
 def test_fetch_symbol_rates():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = RatesRepository(config, mock_log)
     do_connect(config)
     prices.objects.all().delete()
     insert_prices_record()
     objs = repo.fetch_symbol_rates()
     assert (len(objs.rates) == 100)
-    assert(objs.rates['BTC'].price ==    8101.799293468747)
+    assert (objs.rates['BTC'].price == 8101.799293468747)
 
 
 def test_fetch_exchange_rates():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = RatesRepository(config, mock_log)
     do_connect(config)
     exchange_rates.objects.all().delete()
     insert_exchange_record()
@@ -48,7 +50,7 @@ def test_fetch_exchange_rates():
 
 def test_fetch_prices_and_symbols():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = RatesRepository(config, mock_log)
     do_connect(config)
     prices.objects.all().delete()
     insert_prices_record()
@@ -88,7 +90,7 @@ def test_update_notification_when_does_not_exist_throws_ValueError():
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
         repo.update_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik', "nik@test.com", 1, "field_name",
-                                      ">",1,1,"OXT","telegram")
+                                 ">", 1, 1, "OXT", "telegram")
 
 
 def test_update_notification():
@@ -97,14 +99,11 @@ def test_update_notification():
     do_connect(config)
     user_notification.objects.all().delete()
 
-    un = repo.insert_notification( 1, 'nik', "nik@test.com", 1, "field_name",
-                                      ">",1,1,"OXT","telegram")
-    un = repo.update_notification(un.id,  1, 'nik2', "nik@test.com", 1, "field_name",
-                                      ">",1,1,"OXT","telegram")
+    un = repo.insert_notification(1, 'nik', "nik@test.com", 1, "field_name",
+                                  ">", 1, 1, "OXT", "telegram")
+    un = repo.update_notification(un.id, 1, 'nik2', "nik@test.com", 1, "field_name",
+                                  ">", 1, 1, "OXT", "telegram")
     assert (un.user_name == "nik2")
-
-
-
 
 
 def test_delete_notification_when_exists():
@@ -112,10 +111,7 @@ def test_delete_notification_when_exists():
     repo = Repository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
-    ut = repo.insert_notification(1, 'nik', 'nik@OXT.com', 100, 'field1', ">", 1, 1,"OXT","telegram")
+    ut = repo.insert_notification(1, 'nik', 'nik@OXT.com', 100, 'field1', ">", 1, 1, "OXT", "telegram")
     assert (len(user_notification.objects) == 1)
     ut = repo.delete_notification(ut.id)
     assert (len(user_notification.objects) == 0)
-
-
-

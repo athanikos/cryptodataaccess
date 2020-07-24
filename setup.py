@@ -7,12 +7,12 @@ with open("README.md", "r") as fh:
 
 setup(
     name='cryptodataaccess-athanikos',
-    version="0.0.5",
+    version="0.0.7",
     license='MIT License',
     author='Nikos Athanasakis',
     packages=setuptools.find_packages(),
     author_email='athanikos@gmail.com',
-    description='A set of rest api methods used for calculating statistics and applying models for football data ',
+    description='data access layer for crypto model  ',
     tests_require=['pytest'],
     classifiers=[
         "Development Status :: 1 - Planning",
