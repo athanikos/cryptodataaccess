@@ -10,6 +10,9 @@ class TransactionRepository:
         self.configuration = config
         self.log_error = log_error
 
+    def fetch_distinct_user_ids(self):
+        return helpers.server_time_out_wrapper(self, self.do_fetch_transaction, id)
+
     def fetch_transaction(self, id):
         return helpers.server_time_out_wrapper(self, self.do_fetch_transaction, id)
 
@@ -18,6 +21,9 @@ class TransactionRepository:
 
     def fetch_transactions(self, user_id):
         return helpers.server_time_out_wrapper(self, self.do_fetch_transactions, user_id)
+
+    def fetch_distinct_user_ids(self, user_id):
+        return helpers.server_time_out_wrapper(self, self.do_fetch_distinct_user_ids(), user_id)
 
     def insert_transaction(self, user_id, volume, symbol, value, price, currency, date, source, source_id, operation):
         return helpers.server_time_out_wrapper(self, self.do_insert_transaction, user_id, volume, symbol,
@@ -90,6 +96,10 @@ class TransactionRepository:
         helpers.do_connect(self.configuration)
         return user_transaction.objects(Q(user_id=user_id))
 
-    def do_fetch_transaction(self, id ):
+    def do_fetch_transaction(self,id):
         helpers.do_connect(self.configuration)
         return user_transaction.objects(Q(id=id))[0]
+
+    def do_fetch_distinct_user_ids(self):
+        helpers.do_connect(self.configuration)
+        return user_transaction.objects().only('user_id').distinct('user_id')

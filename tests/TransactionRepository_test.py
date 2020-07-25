@@ -109,3 +109,32 @@ def test_fetch_transaction():
                                  source_id=None, operation='Added')
     ut = repo.fetch_transaction(ut.id)
     assert (ut.source_id is None)
+
+
+def test_fetch_transaction():
+    config = configure_app()
+    repo = TransactionRepository(config, mock_log)
+    do_connect(config)
+    user_transaction.objects.all().delete()
+    ut = repo.insert_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
+                                 source_id=ObjectId('666f6f2d6261722d71757578'), operation='Added')
+    items =  ut = repo.do_fetch_distinct_user_ids()
+    assert (len(items)==1)
+    user_transaction.objects.all().delete()
+    ut = repo.insert_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
+                                 source_id=ObjectId('666f6f2d6261722d71757578'), operation='Added')
+    ut = repo.insert_transaction(12, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
+                                 source_id=ObjectId('666f6f2d6261722d71757578'), operation='Added')
+    items =  ut = repo.do_fetch_distinct_user_ids()
+    assert (len(items)==2)
+    user_transaction.objects.all().delete()
+    ut = repo.insert_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
+                                 source_id=ObjectId('666f6f2d6261722d71757578'), operation='Added')
+    ut = repo.insert_transaction(12, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
+                                 source_id=ObjectId('666f6f2d6261722d71757578'), operation='Added')
+    ut = repo.insert_transaction(3, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
+                                 source_id=ObjectId('666f6f2d6261722d71757578'), operation='Added')
+    ut = repo.insert_transaction(122, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
+                                 source_id=ObjectId('666f6f2d6261722d71757578'), operation='Added')
+    items =  ut = repo.do_fetch_distinct_user_ids()
+    assert (len(items)==4)
