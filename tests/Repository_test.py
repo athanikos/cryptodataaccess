@@ -89,8 +89,7 @@ def test_update_notification_when_does_not_exist_throws_ValueError():
     do_connect(config)
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
-        repo.update_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik', "nik@test.com", 1, "field_name",
-                                 ">", 1, 1, "OXT", "telegram")
+        repo.update_notification(ObjectId('666f6f2d6261722d71757578'), 1,'nik2','email','some expr',1,1,True,'telegram','expr to send')
 
 
 def test_update_notification():
@@ -98,11 +97,8 @@ def test_update_notification():
     repo = Repository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
-
-    un = repo.insert_notification(1, 'nik', "nik@test.com", 1, "field_name",
-                                  ">", 1, 1, "OXT", "telegram")
-    un = repo.update_notification(un.id, 1, 'nik2', "nik@test.com", 1, "field_name",
-                                  ">", 1, 1, "OXT", "telegram")
+    un = repo.insert_notification(1,'username','email','some expr',1,1,True,'telegram','expr to send')
+    un = repo.update_notification(un.id, 1,'nik2','email','some expr',1,1,True,'telegram','expr to send')
     assert (un.user_name == "nik2")
 
 
@@ -111,7 +107,7 @@ def test_delete_notification_when_exists():
     repo = Repository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
-    ut = repo.insert_notification(1, 'nik', 'nik@OXT.com', 100, 'field1', ">", 1, 1, "OXT", "telegram")
+    ut = repo.insert_notification(1,'username','email','some expr',1,1,True,'telegram','expr to send')
     assert (len(user_notification.objects) == 1)
     ut = repo.delete_notification(ut.id)
     assert (len(user_notification.objects) == 0)

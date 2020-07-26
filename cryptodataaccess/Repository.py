@@ -1,5 +1,3 @@
-
-
 from mongoengine import Q
 from cryptomodel.cryptostore import user_notification, user_channel, user_transaction, operation_type
 from cryptomodel.cryptostore import user_settings
@@ -21,21 +19,17 @@ class Repository:
     def fetch_notifications(self, items_count):
         return helpers.server_time_out_wrapper(self, self.do_fetch_notifications, items_count)
 
-
-
-    def insert_notification(self, user_id, user_name, user_email, condition_value, field_name, operator, notify_times,
-                            notify_every_in_seconds, symbol, channel_type):
+    def insert_notification(self, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
+                            check_times, is_active, channel_type, fields_to_send):
         return helpers.server_time_out_wrapper(self, self.do_insert_notification, user_id, user_name, user_email,
-                                               condition_value, field_name, operator,
-                                               notify_times,
-                                               notify_every_in_seconds, symbol, channel_type)
+                                               expression_to_evaluate, check_every_seconds,
+                                               check_times, is_active, channel_type, fields_to_send)
 
-    def update_notification(self, id, user_id, user_name, user_email, condition_value, field_name, operator, notify_times,
-                            notify_every_in_seconds, symbol, channel_type):
-        return helpers.server_time_out_wrapper(self, self.do_update_notification, id,  user_id, user_name, user_email,
-                                               condition_value, field_name, operator,
-                                               notify_times,
-                                               notify_every_in_seconds, symbol, channel_type)
+    def update_notification(self,id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
+                            check_times, is_active, channel_type, fields_to_send):
+        return helpers.server_time_out_wrapper(self, self.do_update_notification, id, user_id, user_name, user_email,
+                                               expression_to_evaluate, check_every_seconds,
+                                               check_times, is_active, channel_type, fields_to_send)
 
     def update_user_settings(self, user_id, preferred_currency):
         return helpers.server_time_out_wrapper(self, self.do_update_user_settings, user_id, preferred_currency)
@@ -60,27 +54,24 @@ class Repository:
         helpers.do_connect(self.configuration)
         return user_notification.objects()[:items_count]
 
-    def do_fetch_transactions(self, user_id ):
+    def do_fetch_transactions(self, user_id):
         helpers.do_connect(self.configuration)
         return user_transaction.objects(Q(user_id=user_id))
 
-    def do_insert_notification(self, user_id, user_name, user_email, condition_value, field_name, operator,
-                               notify_times,
-                               notify_every_in_seconds, symbol, channel_type):
+    def do_insert_notification(self, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
+                               check_times, is_active, channel_type, fields_to_send):
         helpers.do_connect(self.configuration)
         un = user_notification()
-        un.userId = user_id
-        un.is_active = True
-        un.times_sent = 0
-        un.channel_type = channel_type
+        un.user_id = user_id
         un.user_name = user_name
         un.user_email = user_email
-        un.condition_value = condition_value
-        un.field_name = field_name
-        un.operator = operator
-        un.notify_times = notify_times
-        un.notify_every_in_seconds = notify_every_in_seconds
-        un.symbol = symbol
+        un.is_active = True
+        un.expression_to_evaluate = expression_to_evaluate
+        un.check_every_seconds = check_every_seconds
+        un.check_times = check_times
+        un.is_active = is_active
+        un.channel_type = channel_type
+        un.fields_to_send = fields_to_send
         un.save()
         return user_notification.objects(id=un.id).first()
 
@@ -97,11 +88,11 @@ class Repository:
         helpers.do_connect(self.configuration)
         us = user_settings()
         us.userId = user_id
-        us.preferred_currency= preferred_currency
+        us.preferred_currency = preferred_currency
         us.save()
         return user_settings.objects(id=us.id).first()
 
-    def do_update_user_settings(self, id, user_id,  preferred_currency):
+    def do_update_user_settings(self, id, user_id, preferred_currency):
         helpers.do_connect(self.configuration)
         us = user_settings.objects(id=id).first()
         if_none_raise_with_id(id, us)
@@ -110,25 +101,22 @@ class Repository:
         us.save()
         return user_settings.objects(id=id).first()
 
-    def do_update_notification(self, id, user_id, user_name, user_email, condition_value, field_name, operator,
-                               notify_times,
-                               notify_every_in_seconds, symbol, channel_type):
+    def do_update_notification(self, id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
+                               check_times, is_active, channel_type, fields_to_send):
         helpers.do_connect(self.configuration)
-        un = user_notification.objects(id = id ).first()
+        un = user_notification.objects(id=id).first()
         if_none_raise_with_id(id, un)
         un.id = id
         un.userId = user_id
-        un.is_active = True
-        un.times_sent = 0
-        un.channel_type = channel_type
         un.user_name = user_name
         un.user_email = user_email
-        un.condition_value = condition_value
-        un.field_name = field_name
-        un.operator = operator
-        un.notify_times = notify_times
-        un.notify_every_in_seconds = notify_every_in_seconds
-        un.symbol = symbol
+        un.is_active = True
+        un.expression_to_evaluate = expression_to_evaluate
+        un.check_every_seconds = check_every_seconds
+        un.check_times = check_times
+        un.is_active = is_active
+        un.channel_type = channel_type
+        un.fields_to_send = fields_to_send
         un.save()
         return user_notification.objects(id=un.id).first()
 
