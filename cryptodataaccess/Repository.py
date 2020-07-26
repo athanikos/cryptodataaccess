@@ -59,7 +59,7 @@ class Repository:
         return user_transaction.objects(Q(user_id=user_id))
 
     def do_insert_notification(self, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                               check_times, is_active, channel_type, fields_to_send):
+                               check_times, is_active, channel_type, fields_to_send,source_id, operation):
         helpers.do_connect(self.configuration)
         un = user_notification()
         un.user_id = user_id
@@ -72,6 +72,8 @@ class Repository:
         un.is_active = is_active
         un.channel_type = channel_type
         un.fields_to_send = fields_to_send
+        un.source_id = source_id
+        un.operation = operation
         un.save()
         return user_notification.objects(id=un.id).first()
 
@@ -102,7 +104,7 @@ class Repository:
         return user_settings.objects(id=id).first()
 
     def do_update_notification(self, id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                               check_times, is_active, channel_type, fields_to_send):
+                               check_times, is_active, channel_type, fields_to_send, source_id, operation):
         helpers.do_connect(self.configuration)
         un = user_notification.objects(id=id).first()
         if_none_raise_with_id(id, un)
@@ -117,6 +119,8 @@ class Repository:
         un.is_active = is_active
         un.channel_type = channel_type
         un.fields_to_send = fields_to_send
+        un.source_id = source_id
+        un.operation = operation
         un.save()
         return user_notification.objects(id=un.id).first()
 
