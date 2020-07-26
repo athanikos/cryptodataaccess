@@ -135,3 +135,14 @@ class Repository:
         us = user_settings.objects(id=id).first()
         if_none_raise_with_id(id, us)
         us.delete()
+
+    def delete_user_notification_by_source_id(self, source_id, throw_if_does_not_exist=True):
+        helpers.server_time_out_wrapper(self, self.do_delete_user_notification_by_source_id, source_id, throw_if_does_not_exist)
+
+    def do_delete_user_notification_by_source_id(self, source_id, throw_if_does_not_exist=True):
+        helpers.do_connect(self.configuration)
+        un = user_notification.objects(source_id=source_id).first()
+        if throw_if_does_not_exist:
+            if_none_raise_with_id(id, un)
+        if un is not None:
+            un.delete()

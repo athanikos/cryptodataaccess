@@ -89,7 +89,8 @@ def test_update_notification_when_does_not_exist_throws_ValueError():
     do_connect(config)
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
-        repo.update_notification(ObjectId('666f6f2d6261722d71757578'), 1,'nik2','email','some expr',1,1,True,'telegram','expr to send',ObjectId('666f6f2d6261722d71757578'),'Modified')
+        repo.update_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik2', 'email', 'some expr', 1, 1, True,
+                                 'telegram', 'expr to send', ObjectId('666f6f2d6261722d71757578'), 'Modified')
 
 
 def test_update_notification():
@@ -97,8 +98,10 @@ def test_update_notification():
     repo = Repository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
-    un = repo.insert_notification(1,'username','email','some expr',1,1,True,'telegram','expr to send',ObjectId('666f6f2d6261722d71757578'),'Added')
-    un = repo.update_notification(un.id, 1,'nik2','email','some expr',1,1,True,'telegram','expr to send',ObjectId('666f6f2d6261722d71757578'),'Modified')
+    un = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
+                                  ObjectId('666f6f2d6261722d71757578'), 'Added')
+    un = repo.update_notification(un.id, 1, 'nik2', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
+                                  ObjectId('666f6f2d6261722d71757578'), 'Modified')
     assert (un.user_name == "nik2")
 
 
@@ -107,7 +110,19 @@ def test_delete_notification_when_exists():
     repo = Repository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
-    ut = repo.insert_notification(1,'username','email','some expr',1,1,True,'telegram','expr to send',ObjectId('666f6f2d6261722d71757578'),'Added')
+    ut = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
+                                  ObjectId('666f6f2d6261722d71757578'), 'Added')
     assert (len(user_notification.objects) == 1)
     ut = repo.delete_notification(ut.id)
+    assert (len(user_notification.objects) == 0)
+
+
+def test_delete_user_notification_when_exists_by_source_id():
+    config = configure_app()
+    repo = Repository(config, mock_log)
+    do_connect(config)
+    un = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
+                                  ObjectId('666f6f2d6261722d71757578'), 'Added')
+    assert (len(user_notification.objects) == 1)
+    ut = repo.do_delete_user_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
     assert (len(user_notification.objects) == 0)

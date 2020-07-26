@@ -111,7 +111,7 @@ def test_fetch_transaction():
     assert (ut.source_id is None)
 
 
-def test_fetch_transaction():
+def test_fetch_distinct_user_ids():
     config = configure_app()
     repo = TransactionRepository(config, mock_log)
     do_connect(config)
