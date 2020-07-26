@@ -20,16 +20,16 @@ class Repository:
         return helpers.server_time_out_wrapper(self, self.do_fetch_notifications, items_count)
 
     def insert_notification(self, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                            check_times, is_active, channel_type, fields_to_send):
+                            check_times, is_active, channel_type, fields_to_send,source_id, operation):
         return helpers.server_time_out_wrapper(self, self.do_insert_notification, user_id, user_name, user_email,
                                                expression_to_evaluate, check_every_seconds,
-                                               check_times, is_active, channel_type, fields_to_send)
+                                               check_times, is_active, channel_type, fields_to_send,source_id, operation)
 
     def update_notification(self,id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                            check_times, is_active, channel_type, fields_to_send):
+                            check_times, is_active, channel_type, fields_to_send,source_id, operation):
         return helpers.server_time_out_wrapper(self, self.do_update_notification, id, user_id, user_name, user_email,
                                                expression_to_evaluate, check_every_seconds,
-                                               check_times, is_active, channel_type, fields_to_send)
+                                               check_times, is_active, channel_type, fields_to_send,source_id, operation)
 
     def update_user_settings(self, user_id, preferred_currency):
         return helpers.server_time_out_wrapper(self, self.do_update_user_settings, user_id, preferred_currency)
