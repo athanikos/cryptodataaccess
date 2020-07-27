@@ -7,7 +7,7 @@ from cryptodataaccess.helpers import if_none_raise, if_none_raise_with_id
 DATE_FORMAT = "%Y-%m-%d"
 
 
-class Repository:
+class UsersRepository:
 
     def __init__(self, config, log_error):
         self.configuration = config

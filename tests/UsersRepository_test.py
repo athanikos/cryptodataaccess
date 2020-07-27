@@ -5,7 +5,7 @@ from cryptomodel.cryptostore import user_channel, user_transaction, user_notific
 from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates
 from cryptodataaccess.config import configure_app
-from cryptodataaccess.Repository import Repository
+from cryptodataaccess.UsersRepository import UsersRepository
 from cryptodataaccess.RatesRepository import RatesRepository
 import pytest
 from cryptodataaccess.helpers import do_connect
@@ -65,7 +65,7 @@ def test_fetch_prices_and_symbols():
 
 def test_insert_user_channel():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = UsersRepository(config, mock_log)
     do_connect(config)
     user_channel.objects.all().delete()
     uc = repo.insert_user_channel(1, 'da', '1')
@@ -78,14 +78,14 @@ def test_log_when_do_connect_raises_exception(mock_log):
         _mock.side_effect = ServerSelectionTimeoutError("hi")
         with mock.patch("cryptodataaccess.helpers.log_error") as log:
             with pytest.raises(ServerSelectionTimeoutError):
-                repo = Repository(configure_app(), mock_log)
+                repo = UsersRepository(configure_app(), mock_log)
                 repo.insert_user_channel(1, "telegram", chat_id="1")
             mock_log.assert_called()
 
 
 def test_update_notification_when_does_not_exist_throws_ValueError():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = UsersRepository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
@@ -95,7 +95,7 @@ def test_update_notification_when_does_not_exist_throws_ValueError():
 
 def test_update_notification():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = UsersRepository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
     un = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
@@ -107,7 +107,7 @@ def test_update_notification():
 
 def test_delete_notification_when_exists():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = UsersRepository(config, mock_log)
     do_connect(config)
     user_notification.objects.all().delete()
     ut = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
@@ -119,7 +119,7 @@ def test_delete_notification_when_exists():
 
 def test_delete_user_notification_when_exists_by_source_id():
     config = configure_app()
-    repo = Repository(config, mock_log)
+    repo = UsersRepository(config, mock_log)
     do_connect(config)
     un = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
                                   ObjectId('666f6f2d6261722d71757578'), 'Added')
