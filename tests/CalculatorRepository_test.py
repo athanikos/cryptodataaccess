@@ -23,12 +23,3 @@ def test_eval_collection():
     assert(len(eval(j).objects()),actual_count)
 
 
-def test_eval_collecion_with_order_by():
-    config = configure_app()
-    do_connect(config)
-    actual_count = prices.objects()
-    j = "prices"
-    assert(len(eval(j).objects()),actual_count)
-
-
-
