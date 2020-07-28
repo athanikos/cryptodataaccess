@@ -19,3 +19,16 @@ class CalculatorRepository:
 
     def evaluate_expression(self):
         pass
+
+
+class StatementExecutor:
+
+    def prepare(self):
+        pass
+
+    def execute(self):
+        pass
+
+
+class MongoEngineStatementExecutor(StatementExecutor):
+    pass
