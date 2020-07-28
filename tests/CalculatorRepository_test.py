@@ -2,10 +2,10 @@ import mock
 from bson import ObjectId
 from cryptomodel.coinmarket import  prices
 from cryptodataaccess.config import configure_app
-from cryptodataaccess.TransactionRepository import TransactionRepository
+from cryptodataaccess.CalculatorRepository import CalculatorRepository
 import pytest
 from cryptodataaccess.helpers import do_connect
-
+from tests.helpers import insert_prices_record
 
 @pytest.fixture(scope='module')
 def mock_log():

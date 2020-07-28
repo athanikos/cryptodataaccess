@@ -22,9 +22,13 @@ class RatesRepository:
         return symbols
 
     def fetch_symbol_rates(self):
-        dt_now = datetime.today().strftime(DATE_FORMAT)
-        srs = SymbolRates(dt_now)
-        latest_prices = self.fetch_latest_prices_to_date(dt_now)
+        dt_now = datetime.today()
+        return self.fetch_symbol_rates_for_date(dt_now)
+
+    def fetch_symbol_rates_for_date(self, dt):
+        dt_str = dt.strftime(DATE_FORMAT)
+        srs = SymbolRates(dt_str)
+        latest_prices = self.fetch_latest_prices_to_date(dt_str)
         for coin in latest_prices[0].coins:
             srs.add_rate(coin.symbol, coin.quote.eur)
         return srs
