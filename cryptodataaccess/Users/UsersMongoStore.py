@@ -26,98 +26,86 @@ class UsersMongoStore(UsersStore, ABC):
     def fetch_notifications(self, items_count):
         return helpers.server_time_out_wrapper(self, self.do_fetch_notifications, items_count)
 
-    def insert_notification(self, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                            check_times, is_active, channel_type, fields_to_send, source_id, operation):
-        return helpers.server_time_out_wrapper(self, self.do_insert_notification, user_id, user_name, user_email,
-                                               expression_to_evaluate, check_every_seconds,
-                                               check_times, is_active, channel_type, fields_to_send, source_id,
-                                               operation)
+    def insert_notification(self, notification):
+        return helpers.server_time_out_wrapper(self, self.do_insert_notification, notification)
 
-    def update_notification(self, id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                            check_times, is_active, channel_type, fields_to_send, source_id, operation):
-        return helpers.server_time_out_wrapper(self, self.do_update_notification, id, user_id, user_name, user_email,
-                                               expression_to_evaluate, check_every_seconds,
-                                               check_times, is_active, channel_type, fields_to_send, source_id,
-                                               operation)
+    def update_notification(self, notification):
+        return helpers.server_time_out_wrapper(self, self.do_update_notification, id, notification)
 
-    def update_user_settings(self, user_id, preferred_currency):
-        return helpers.server_time_out_wrapper(self, self.do_update_user_settings, user_id, preferred_currency)
+    def update_user_settings(self,user_settings):
+        return helpers.server_time_out_wrapper(self, self.do_update_user_settings,user_settings)
 
-    def insert_user_settings(self, user_id, preferred_currency):
-        return helpers.server_time_out_wrapper(self, self.do_insert_user_channel, user_id, preferred_currency)
+    def insert_user_settings(self, user_settings):
+        return helpers.server_time_out_wrapper(self, self.do_insert_user_channel, user_settings)
 
-    def insert_user_channel(self, user_id, channel_type, chat_id):
-        return helpers.server_time_out_wrapper(self, self.do_insert_user_channel, user_id, channel_type, chat_id)
+    def insert_user_channel(self, user_channel):
+        return helpers.server_time_out_wrapper(self, self.do_insert_user_channel, user_channel)
 
-    def delete_notification(self, id):
-        helpers.server_time_out_wrapper(self, self.do_delete_notification, id)
+    def delete_notification(self, notification):
+        helpers.server_time_out_wrapper(self, self.do_delete_notification, notification)
 
-    def delete_user_settings(self, id):
-        helpers.server_time_out_wrapper(self, self.do_delete_user_settings, id)
+    def delete_user_settings(self, us):
+        helpers.server_time_out_wrapper(self, self.do_delete_user_settings, us)
 
-    def do_insert_notification(self, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                               check_times, is_active, channel_type, fields_to_send, source_id, operation):
+    def do_insert_notification(self, notification):
         helpers.do_connect(self.configuration)
         un = user_notification()
-        un.user_id = user_id
-        un.user_name = user_name
-        un.user_email = user_email
-        un.is_active = True
-        un.expression_to_evaluate = expression_to_evaluate
-        un.check_every_seconds = check_every_seconds
-        un.check_times = check_times
-        un.is_active = is_active
-        un.channel_type = channel_type
-        un.fields_to_send = fields_to_send
-        un.source_id = source_id
-        un.operation = operation
+        un.user_id = notification.user_id
+        un.user_name =notification. user_name
+        un.user_email = notification.user_email
+        un.expression_to_evaluate = notification.expression_to_evaluate
+        un.check_every_seconds = notification.check_every_seconds
+        un.check_times = notification.check_times
+        un.is_active = notification.is_active
+        un.channel_type = notification.channel_type
+        un.fields_to_send =notification. fields_to_send
+        un.source_id = notification.source_id
+        un.operation = notification.operation
         un.save()
         return user_notification.objects(id=un.id).first()
 
-    def do_insert_user_channel(self, user_id, channel_type, chat_id):
+    def do_insert_user_channel(self, user_channel):
         helpers.do_connect(self.configuration)
         uc = user_channel()
-        uc.userId = user_id
-        uc.channel_type = channel_type
-        uc.chat_id = chat_id
+        uc.userId = uc.user_iduser_id
+        uc.channel_type =  uc.user_idchannel_type
+        uc.chat_id =  uc.user_id
         uc.save()
-        return user_channel.objects(id=uc.id).first()
+        return uc.objects(id=uc.id).first()
 
-    def do_insert_user_settings(self, user_id, preferred_currency):
+    def do_insert_user_settings(self, user_setting):
         helpers.do_connect(self.configuration)
-        us = user_settings()
-        us.userId = user_id
-        us.preferred_currency = preferred_currency
+        us = user_setting()
+        us.userId = us.user_id
+        us.preferred_currency = us.preferred_currency
         us.save()
-        return user_settings.objects(id=us.id).first()
+        return us.objects(id=us.id).first()
 
-    def do_update_user_settings(self, id, user_id, preferred_currency):
+    def do_update_user_settings(self, user_setting):
         helpers.do_connect(self.configuration)
-        us = user_settings.objects(id=id).first()
+        us = user_setting.objects(id=id).first()
         if_none_raise_with_id(id, us)
-        us.user_id = user_id
-        us.preferred_currency = preferred_currency
+        us.user_id =user_setting.user_id
+        us.preferred_currency = user_setting.preferred_currency
         us.save()
-        return user_settings.objects(id=id).first()
+        return user_setting.objects(id=id).first()
 
-    def do_update_notification(self, id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
-                               check_times, is_active, channel_type, fields_to_send, source_id, operation):
+    def do_update_notification(self, id,notification):
         helpers.do_connect(self.configuration)
         un = user_notification.objects(id=id).first()
         if_none_raise_with_id(id, un)
         un.id = id
-        un.userId = user_id
-        un.user_name = user_name
-        un.user_email = user_email
-        un.is_active = True
-        un.expression_to_evaluate = expression_to_evaluate
-        un.check_every_seconds = check_every_seconds
-        un.check_times = check_times
-        un.is_active = is_active
-        un.channel_type = channel_type
-        un.fields_to_send = fields_to_send
-        un.source_id = source_id
-        un.operation = operation
+        un.userId = notification.user_id
+        un.user_name = notification.user_name
+        un.user_email = notification.user_email
+        un.expression_to_evaluate =notification. expression_to_evaluate
+        un.check_every_seconds =notification.  check_every_seconds
+        un.check_times =notification.  check_times
+        un.is_active =notification.  is_active
+        un.channel_type =notification.  channel_type
+        un.fields_to_send = notification. fields_to_send
+        un.source_id = notification. source_id
+        un.operation = notification.operation
         un.save()
         return user_notification.objects(id=un.id).first()
 
@@ -133,16 +121,18 @@ class UsersMongoStore(UsersStore, ABC):
         if un is not None:
             un.delete()
 
-    def do_delete_notification(self, id):
+    def do_delete_notification(self, notif, throw_if_does_not_exist=True):
         helpers.do_connect(self.configuration)
-        un = user_notification.objects(id=id).first()
-        if_none_raise_with_id(id, un)
-        un.delete()
+        un = user_notification.objects(id=notif.id).first()
+        if throw_if_does_not_exist:
+            if_none_raise_with_id(id, un)
+        if un is not None:
+            un.delete()
 
-    def do_delete_user_settings(self, id):
+    def do_delete_user_settings(self, us):
         helpers.do_connect(self.configuration)
-        us = user_settings.objects(id=id).first()
-        if_none_raise_with_id(id, us)
+        us = user_settings.objects(id=us.id).first()
+        if_none_raise_with_id(us.id, us)
         us.delete()
 
     def do_fetch_user_channels(self, user_id):

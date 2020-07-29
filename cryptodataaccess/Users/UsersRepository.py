@@ -1,4 +1,4 @@
-from cryptomodel.cryptostore import user_notification
+from cryptomodel.cryptostore import user_notification,user_channel
 from cryptomodel.operations import OPERATIONS
 
 from cryptodataaccess.Memory import Memory
@@ -80,9 +80,11 @@ class UsersRepository(Repository):
 
     def add_user_channel(self, user_id, channel_type, chat_id):
         self.user_channels.append(
-            user_id=user_id,
-            channel_type=channel_type,
-            chat_id=chat_id
+            user_channel(
+                user_id=user_id,
+                channel_type=channel_type,
+                chat_id=chat_id
+            )
         )
 
     def remove_notification(self, in_id):
