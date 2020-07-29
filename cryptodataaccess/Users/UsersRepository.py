@@ -1,5 +1,5 @@
 from mongoengine import Q
-from cryptomodel.cryptostore import user_notification, user_channel, user_transaction, operation_type
+from cryptomodel.cryptostore import user_notification, user_channel, user_transaction
 from cryptomodel.cryptostore import user_settings
 from cryptodataaccess import helpers
 from cryptodataaccess.helpers import if_none_raise, if_none_raise_with_id
