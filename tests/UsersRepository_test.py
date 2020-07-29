@@ -4,6 +4,8 @@ from pymongo.errors import ServerSelectionTimeoutError
 from cryptomodel.cryptostore import user_channel, user_notification
 from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates
+
+from cryptodataaccess.Users.UsersMongoStore import UsersMongoStore
 from cryptodataaccess.config import configure_app
 from cryptodataaccess.Users.UsersRepository import UsersRepository
 from cryptodataaccess.Rates.RatesRepository import RatesRepository
@@ -65,10 +67,12 @@ def test_fetch_prices_and_symbols():
 
 def test_insert_user_channel():
     config = configure_app()
-    repo = UsersRepository(config, mock_log)
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
     do_connect(config)
+
     user_channel.objects.all().delete()
-    uc = repo.insert_user_channel(1, 'da', '1')
+    uc = repo.add_user_channel(1, 'da', '1')
     assert (uc.channel_type == 'da')
 
 
@@ -79,50 +83,81 @@ def test_log_when_do_connect_raises_exception(mock_log):
         with mock.patch("cryptodataaccess.helpers.log_error") as log:
             with pytest.raises(ServerSelectionTimeoutError):
                 repo = UsersRepository(configure_app(), mock_log)
-                repo.insert_user_channel(1, "telegram", chat_id="1")
+                repo.add_user_channel(1, "telegram", chat_id="1")
             mock_log.assert_called()
 
 
 def test_update_notification_when_does_not_exist_throws_ValueError():
     config = configure_app()
-    repo = UsersRepository(config, mock_log)
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
     do_connect(config)
+
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
-        repo.update_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik2', 'email', 'some expr', 1, 1, True,
-                                 'telegram', 'expr to send', ObjectId('666f6f2d6261722d71757578'), 'Modified')
+        repo.edit_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik2', 'email', 'some expr', 1, 1, True,
+                                 'telegram', 'expr to send', ObjectId('666f6f2d6261722d71757578'))
 
 
 def test_update_notification():
     config = configure_app()
-    repo = UsersRepository(config, mock_log)
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
     do_connect(config)
+
     user_notification.objects.all().delete()
-    un = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
-                                  ObjectId('666f6f2d6261722d71757578'), 'ADDED')
-    un = repo.update_notification(un.id, 1, 'nik2', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
-                                  ObjectId('666f6f2d6261722d71757578'), 'MODIFIED')
+    repo.add_notification(user_id= 1,user_name='username',user_email= 'email',
+                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
+                          is_active=True,  channel_type='telegram',
+                          fields_to_send="dsd",
+                          source_id=ObjectId('666f6f2d6261722d71757578'))
+
+    repo.edit_notification(user_id= 1,user_name='username',user_email= 'email',
+                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
+                          is_active=True,  channel_type='telegram',
+                           fields_to_send="dsd",
+                          source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.commit()
+    un = repo.memories[0].items[1]
+
     assert (un.user_name == "nik2")
 
 
 def test_delete_notification_when_exists():
     config = configure_app()
-    repo = UsersRepository(config, mock_log)
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
     do_connect(config)
+
     user_notification.objects.all().delete()
-    ut = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
-                                  ObjectId('666f6f2d6261722d71757578'), 'ADDED')
+
+    repo.add_notification(user_id= 1,user_name='username',user_email= 'email',
+                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
+                          is_active=True,  channel_type='telegram',                          fields_to_send="dsd",
+                          source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.commit()
+    ut = repo.memories[0].items[0]
+
     assert (len(user_notification.objects) == 1)
-    ut = repo.delete_notification(ut.id)
+    ut = repo.remove_notification(ut.id)
     assert (len(user_notification.objects) == 0)
 
 
 def test_delete_user_notification_when_exists_by_source_id():
     config = configure_app()
-    repo = UsersRepository(config, mock_log)
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
     do_connect(config)
-    un = repo.insert_notification(1, 'username', 'email', 'some expr', 1, 1, True, 'telegram', 'expr to send',
-                                  ObjectId('666f6f2d6261722d71757578'), 'ADDED')
+
+
+
+    repo.add_notification(user_id= 1,user_name='username',user_email= 'email',
+                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
+                          is_active=True,  channel_type='telegram',
+                          fields_to_send="dsd",
+                          source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.commit()
+    ut = repo.memories[0].items[0]
     assert (len(user_notification.objects) == 1)
-    ut = repo.do_delete_user_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.do_delete_user_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
     assert (len(user_notification.objects) == 0)
