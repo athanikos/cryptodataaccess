@@ -15,6 +15,7 @@ import pytest
 from tests.helpers import insert_prices_record, insert_exchange_record
 from cryptodataaccess import helpers
 
+
 @pytest.fixture(scope='module')
 def mock_log():
     with mock.patch("cryptodataaccess.helpers.log_error"
@@ -77,7 +78,8 @@ def test_insert_user_channel():
     helpers.do_connect(config)
 
     user_channel.objects.all().delete()
-    repo.add_user_channel(user_id= 1,chat_id= '1', channel_type= 'telegram',  source_id= ObjectId('666f6f2d6261722d71757578') )
+    repo.add_user_channel(user_id=1, chat_id='1', channel_type='telegram',
+                          source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     uc = repo.memories[2].items[0]
     assert (uc.channel_type == 'telegram')
@@ -86,18 +88,15 @@ def test_insert_user_channel():
 
 def test_insert_user_setting():
     config = configure_app()
-    users_store  = UsersMongoStore(config, mock_log)
+    users_store = UsersMongoStore(config, mock_log)
     repo = UsersRepository(users_store)
     helpers.do_connect(config)
     user_settings.objects.all().delete()
-    repo.add_user_settings(user_id= 1, preferred_currency= 'da',  source_id= ObjectId('666f6f2d6261722d71757578') )
+    repo.add_user_settings(user_id=1, preferred_currency='da', source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     uc = repo.memories[1].items[0]
     assert (uc.preferred_currency == 'da')
     assert (uc.operation == OPERATIONS.ADDED.name)
-
-
-
 
 
 def test_update_notification_when_does_not_exist_throws_ValueError():
@@ -106,7 +105,6 @@ def test_update_notification_when_does_not_exist_throws_ValueError():
     repo = UsersRepository(store)
 
     helpers.do_connect(config)
-
 
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
@@ -122,7 +120,6 @@ def test_update_notification():
 
     helpers.do_connect(config)
 
-
     user_notification.objects.all().delete()
     repo.add_notification(user_id=1, user_name='username', user_email='email',
                           expression_to_evaluate='some expr', check_every_seconds=1, check_times=1,
@@ -130,8 +127,7 @@ def test_update_notification():
                           fields_to_send="dsd",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    un  = repo.memories[0].items[0]
-
+    un = repo.memories[0].items[0]
 
     repo.edit_notification(in_id=un.id,
                            user_id=1, user_name='username2', user_email='email',
@@ -151,7 +147,6 @@ def test_delete_notification_when_exists():
     repo = UsersRepository(store)
 
     helpers.do_connect(config)
-
 
     user_notification.objects.all().delete()
 

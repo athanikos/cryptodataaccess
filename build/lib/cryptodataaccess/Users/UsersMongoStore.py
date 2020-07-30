@@ -36,7 +36,7 @@ class UsersMongoStore(UsersStore, ABC):
         return server_time_out_wrapper(self, self.do_update_user_settings,user_settings)
 
     def insert_user_settings(self, user_settings):
-        return server_time_out_wrapper(self, self.do_insert_user_channel, user_settings)
+        return server_time_out_wrapper(self, self.do_insert_user_settings, user_settings)
 
     def insert_user_channel(self, user_channel):
         return server_time_out_wrapper(self, self.do_insert_user_channel, user_channel)
@@ -64,22 +64,26 @@ class UsersMongoStore(UsersStore, ABC):
         un.save()
         return user_notification.objects(id=un.id).first()
 
-    def do_insert_user_channel(self, user_channel):
+    def do_insert_user_channel(self, in_uc):
         do_connect(self.configuration)
         uc = user_channel()
-        uc.userId = uc.user_iduser_id
-        uc.channel_type =  uc.user_idchannel_type
-        uc.chat_id =  uc.user_id
+        uc.user_id = in_uc.user_id
+        uc.channel_type = in_uc.channel_type
+        uc.chat_id = in_uc.chat_id
+        uc.operation = in_uc.operation
+        uc.source_id = in_uc.source_id
         uc.save()
-        return uc.objects(id=uc.id).first()
+        return user_channel.objects(id=uc.id).first()
 
-    def do_insert_user_settings(self, user_setting):
+    def do_insert_user_settings(self, in_uc):
         do_connect(self.configuration)
-        us = user_setting()
-        us.userId = us.user_id
-        us.preferred_currency = us.preferred_currency
+        us = user_settings()
+        us.userId = in_uc.userId
+        us.preferred_currency = in_uc.preferred_currency
+        us.operation = in_uc.operation
+        us.source_id = in_uc.source_id
         us.save()
-        return us.objects(id=us.id).first()
+        return user_settings.objects(id=us.id).first()
 
     def do_update_user_settings(self, user_setting):
         do_connect(self.configuration)

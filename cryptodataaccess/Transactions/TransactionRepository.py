@@ -49,10 +49,14 @@ class TransactionRepository(Repository):
         trans = next((x for x in self.transactions if x.source_id == source_id), None)
         self.mark_deleted(trans)
 
+    # reuse across repos
     def mark_deleted(self, trans):
         if trans is None:
             trans = self.get_transaction(id)
-            trans.operation = OPERATIONS.REMOVED.name
-            self.transactions.append(trans)
+            if trans is None:
+                exit
+            else:
+                trans.operation = OPERATIONS.REMOVED.name
+                self.transactions.append(trans)
         else:
             trans.operation = OPERATIONS.REMOVED.name
