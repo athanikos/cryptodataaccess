@@ -27,19 +27,17 @@ class TransactionRepository(Repository):
         return self.transaction_store.fetch_transactions(user_id)
 
     def add_transaction(self, user_id, volume, symbol, value, price, currency, date, source, source_id):
-        t = user_transaction(user_id=user_id, volume=volume, symbol=symbol, value=value, price=price,
+        self.transactions.append(
+            user_transaction(user_id=user_id, volume=volume, symbol=symbol, value=value, price=price,
                              currency=currency, date=date, source=source, source_id=source_id,
-                             operation=OPERATIONS.ADDED.name)
-        self.transactions.append(t)
-        return t
+                             operation=OPERATIONS.ADDED.name))
 
     def edit_transaction(self, in_id, user_id, volume, symbol, value, price, currency, date, source, source_id):
-        t = user_transaction(id=in_id,
+        self.transactions.append(
+            user_transaction(id=in_id,
                              user_id=user_id, volume=volume, symbol=symbol, value=value, price=price,
                              currency=currency, date=date, source=source, source_id=source_id,
-                             operation=OPERATIONS.MODIFIED.name)
-        self.transactions.append(t)
-        return t
+                             operation=OPERATIONS.MODIFIED.name))
 
     def remove_transaction(self, in_id):
         trans = next((x for x in self.transactions if x.id == in_id), None)

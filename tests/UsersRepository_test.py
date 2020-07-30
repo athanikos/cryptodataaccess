@@ -1,7 +1,8 @@
 import mock
 from bson import ObjectId
+from cryptomodel.operations import OPERATIONS
 from pymongo.errors import ServerSelectionTimeoutError
-from cryptomodel.cryptostore import user_channel, user_notification
+from cryptomodel.cryptostore import user_channel, user_notification, user_settings
 from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates
 
@@ -73,15 +74,30 @@ def test_insert_user_channel():
     config = configure_app()
     rates_store = UsersMongoStore(config, mock_log)
     repo = UsersRepository(rates_store)
-
-
     helpers.do_connect(config)
 
     user_channel.objects.all().delete()
-    repo.add_user_channel(1, 'da', '1')
+    repo.add_user_channel(user_id= 1,chat_id= '1', channel_type= 'telegram',  source_id= ObjectId('666f6f2d6261722d71757578') )
     repo.commit()
     uc = repo.memories[2].items[0]
-    assert (uc.channel_type == 'da')
+    assert (uc.channel_type == 'telegram')
+    assert (uc.operation == OPERATIONS.ADDED.name)
+
+
+def test_insert_user_setting():
+    config = configure_app()
+    users_store  = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(users_store)
+    helpers.do_connect(config)
+    user_settings.objects.all().delete()
+    repo.add_user_settings(user_id= 1, preferred_currency= 'da',  source_id= ObjectId('666f6f2d6261722d71757578') )
+    repo.commit()
+    uc = repo.memories[1].items[0]
+    assert (uc.preferred_currency == 'da')
+    assert (uc.operation == OPERATIONS.ADDED.name)
+
+
+
 
 
 def test_update_notification_when_does_not_exist_throws_ValueError():

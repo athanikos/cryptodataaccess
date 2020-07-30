@@ -1,4 +1,4 @@
-from cryptomodel.cryptostore import user_notification, user_channel, user_settings
+from cryptomodel.cryptostore import user_notification,user_channel
 from cryptomodel.operations import OPERATIONS
 
 from cryptodataaccess.Memory import Memory
@@ -48,53 +48,45 @@ class UsersRepository(Repository):
 
     def add_notification(self, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
                          check_times, is_active, channel_type, fields_to_send, source_id):
-        n =  user_notification(
+        self.notifications.append(
+            user_notification(
             user_id=user_id, user_name=user_name, user_email=user_email, expression_to_evaluate=expression_to_evaluate,
             check_every_seconds=check_every_seconds, check_times=check_times, is_active=is_active,
             channel_type=channel_type, fields_to_send=fields_to_send, source_id=source_id,
             operation=OPERATIONS.ADDED.name)
-        self.notifications.append(n)
-        return n
+        )
 
     def edit_notification(self, in_id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
                           check_times, is_active, channel_type, fields_to_send, source_id):
-
-        n = user_notification(
-            id=in_id,
+        self.notifications.append(
+            user_notification(
+                id = in_id ,
             user_id=user_id, user_name=user_name, user_email=user_email, expression_to_evaluate=expression_to_evaluate,
             check_every_seconds=check_every_seconds, check_times=check_times, is_active=is_active,
             channel_type=channel_type, fields_to_send=fields_to_send, source_id=source_id,
             operation=OPERATIONS.MODIFIED.name)
+        )
 
-        self.notifications.append(n)
-        return n
+    def add_user_settings(self, user_id, preferred_currency):
+        self.user_settings.append(
+            user_id=user_id,
+            preferred_currency=preferred_currency
+        )
 
-    def add_user_settings(self, user_id, preferred_currency, source_id):
-        uc = user_settings( userId=user_id,preferred_currency=preferred_currency, source_id = source_id,
-                            operation=OPERATIONS.ADDED.name)
-        self.user_settings.append(uc)
-        return uc
+    def edit_user_settings(self, user_id, preferred_currency):
+        self.user_settings.append(
+            user_id=user_id,
+            preferred_currency=preferred_currency
+        )
 
-    def edit_user_settings(self, user_id, preferred_currency, source_id):
-        uc = user_settings(user_id=user_id,
-                           preferred_currency=preferred_currency, source_id = source_id,
-
-                           operation=OPERATIONS.MODIFIED.name)
-        self.user_settings.append(uc)
-        return uc
-
-    def add_user_channel(self, user_id, channel_type, chat_id, source_id):
-        uc = user_channel(
+    def add_user_channel(self, user_id, channel_type, chat_id):
+        self.user_channels.append(
+            user_channel(
                 user_id=user_id,
                 channel_type=channel_type,
-                chat_id=chat_id,
-                operation=OPERATIONS.ADDED.name,
-                source_id = source_id)
-
-        self.user_channels.append(
-                uc
+                chat_id=chat_id
+            )
         )
-        return uc
 
     def remove_notification(self, in_id):
         notification = next((x for x in self.notifications if x.id == in_id), None)

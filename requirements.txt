@@ -12,6 +12,6 @@ setuptools~=40.8.0
 pymongo~=3.10.1
 jsonpickle
 apscheduler
-cryptomodel-athanikos==2.2.9
+cryptomodel-athanikos==2.3.1
 werkzeug
 notifiers
