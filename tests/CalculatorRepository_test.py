@@ -20,7 +20,7 @@ def test_eval_collection():
     do_connect(config)
     actual_count = prices.objects()
     j = "prices"
-    assert(len(eval(j).objects()),actual_count)
+    assert(len(eval(j).objects()) == len(actual_count))
 
 
 def test_get_latest_prices_by_date_eval():

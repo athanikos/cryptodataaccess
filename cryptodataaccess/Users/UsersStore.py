@@ -16,6 +16,7 @@ class UsersStore(metaclass=ABCMeta):
                             check_times, is_active, channel_type, fields_to_send, source_id, operation):
         pass
 
+
     @abstractmethod
     def update_notification(self, id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
                             check_times, is_active, channel_type, fields_to_send, source_id, operation):

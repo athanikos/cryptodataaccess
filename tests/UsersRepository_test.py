@@ -11,9 +11,8 @@ from cryptodataaccess.config import configure_app
 from cryptodataaccess.Users.UsersRepository import UsersRepository
 from cryptodataaccess.Rates.RatesRepository import RatesRepository
 import pytest
-from cryptodataaccess.helpers import do_connect
 from tests.helpers import insert_prices_record, insert_exchange_record
-
+from cryptodataaccess import helpers
 
 @pytest.fixture(scope='module')
 def mock_log():
@@ -28,7 +27,7 @@ def test_fetch_symbol_rates():
     rates_store = RatesMongoStore(config, mock_log)
     repo = RatesRepository(rates_store)
 
-    do_connect(config)
+    helpers.do_connect(config)
     prices.objects.all().delete()
     insert_prices_record()
     objs = repo.fetch_symbol_rates()
@@ -75,75 +74,74 @@ def test_insert_user_channel():
     rates_store = UsersMongoStore(config, mock_log)
     repo = UsersRepository(rates_store)
 
-    do_connect(config)
+
+    helpers.do_connect(config)
+
     user_channel.objects.all().delete()
     repo.add_user_channel(1, 'da', '1')
     repo.commit()
-    uc = repo.memories[0].items[0]
+    uc = repo.memories[2].items[0]
     assert (uc.channel_type == 'da')
-
-
-def test_log_when_do_connect_raises_exception(mock_log):
-    with mock.patch("cryptodataaccess.helpers.do_connect"
-                    ) as _mock:
-        _mock.side_effect = ServerSelectionTimeoutError("hi")
-        with mock.patch("cryptodataaccess.helpers.log_error") as log:
-            with pytest.raises(ServerSelectionTimeoutError):
-                config = configure_app()
-                rates_store = UsersMongoStore(config, mock_log)
-                repo = UsersRepository(rates_store)
-                repo.add_user_channel(1, "telegram", chat_id="1")
-            mock_log.assert_called()
 
 
 def test_update_notification_when_does_not_exist_throws_ValueError():
     config = configure_app()
     store = UsersMongoStore(config, mock_log)
     repo = UsersRepository(store)
-    do_connect(config)
+
+    helpers.do_connect(config)
+
 
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
         repo.edit_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik2', 'email', 'some expr', 1, 1, True,
-                                 'telegram', 'expr to send', ObjectId('666f6f2d6261722d71757578'))
+                               'telegram', 'expr to send', ObjectId('666f6f2d6261722d71757578'))
+        repo.commit()
 
 
 def test_update_notification():
     config = configure_app()
     store = UsersMongoStore(config, mock_log)
     repo = UsersRepository(store)
-    do_connect(config)
+
+    helpers.do_connect(config)
+
 
     user_notification.objects.all().delete()
-    repo.add_notification(user_id= 1,user_name='username',user_email= 'email',
-                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
-                          is_active=True,  channel_type='telegram',
+    repo.add_notification(user_id=1, user_name='username', user_email='email',
+                          expression_to_evaluate='some expr', check_every_seconds=1, check_times=1,
+                          is_active=True, channel_type='telegram',
                           fields_to_send="dsd",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.commit()
+    un  = repo.memories[0].items[0]
 
-    repo.edit_notification(id=1,
-                          user_id= 1,user_name='username',user_email= 'email',
-                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
-                          is_active=True,  channel_type='telegram',
+
+    repo.edit_notification(in_id=un.id,
+                           user_id=1, user_name='username2', user_email='email',
+                           expression_to_evaluate='some expr', check_every_seconds=1, check_times=1,
+                           is_active=True, channel_type='telegram',
                            fields_to_send="dsd",
-                          source_id=ObjectId('666f6f2d6261722d71757578'))
+                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     un = repo.memories[0].items[1]
 
-    assert (un.user_name == "nik2")
+    assert (un.user_name == "username2")
 
 
 def test_delete_notification_when_exists():
     config = configure_app()
     store = UsersMongoStore(config, mock_log)
     repo = UsersRepository(store)
-    do_connect(config)
+
+    helpers.do_connect(config)
+
 
     user_notification.objects.all().delete()
 
-    repo.add_notification(user_id= 1,user_name='username',user_email= 'email',
-                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
-                          is_active=True,  channel_type='telegram',                          fields_to_send="dsd",
+    repo.add_notification(user_id=1, user_name='username', user_email='email',
+                          expression_to_evaluate='some expr', check_every_seconds=1, check_times=1,
+                          is_active=True, channel_type='telegram', fields_to_send="dsd",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     ut = repo.memories[0].items[0]
@@ -158,13 +156,14 @@ def test_delete_user_notification_when_exists_by_source_id():
     config = configure_app()
     store = UsersMongoStore(config, mock_log)
     repo = UsersRepository(store)
-    do_connect(config)
+
+    helpers.do_connect(config)
 
     user_notification.objects.all().delete()
 
-    repo.add_notification(user_id= 1,user_name='username',user_email= 'email',
-                          expression_to_evaluate='some expr',check_every_seconds= 1,check_times= 1,
-                          is_active=True,  channel_type='telegram',
+    repo.add_notification(user_id=1, user_name='username', user_email='email',
+                          expression_to_evaluate='some expr', check_every_seconds=1, check_times=1,
+                          is_active=True, channel_type='telegram',
                           fields_to_send="dsd",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()

@@ -50,7 +50,6 @@ def test_update_transaction():
     repo.commit()
     ut = repo.memories[0].items[0]
 
-    print(ut.id)
     repo.edit_transaction(ut.id, 1, 1, 'OXT2', 1, 1, "EUR", "2020-01-01", "kraken",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()

@@ -4,9 +4,9 @@ from cryptomodel.operations import OPERATIONS
 from mongoengine import Q
 from cryptomodel.cryptostore import user_notification, user_channel, user_transaction
 from cryptomodel.cryptostore import user_settings
-from cryptodataaccess import helpers
+from cryptodataaccess.helpers import  server_time_out_wrapper,if_none_raise, if_none_raise_with_id
 from cryptodataaccess.Users.UsersStore import UsersStore
-from cryptodataaccess.helpers import if_none_raise, if_none_raise_with_id
+from cryptodataaccess.helpers import do_connect
 
 DATE_FORMAT = "%Y-%m-%d"
 
@@ -18,37 +18,37 @@ class UsersMongoStore(UsersStore, ABC):
         self.log_error = log_error
 
     def fetch_user_channels(self, user_id):
-        return helpers.server_time_out_wrapper(self, self.do_fetch_user_channels, user_id)
+        return server_time_out_wrapper(self, self.do_fetch_user_channels, user_id)
 
     def fetch_user_settings(self, user_id):
-        return helpers.server_time_out_wrapper(self, self.do_fetch_user_settings, user_id)
+        return server_time_out_wrapper(self, self.do_fetch_user_settings, user_id)
 
     def fetch_notifications(self, items_count):
-        return helpers.server_time_out_wrapper(self, self.do_fetch_notifications, items_count)
+        return server_time_out_wrapper(self, self.do_fetch_notifications, items_count)
 
     def insert_notification(self, notification):
-        return helpers.server_time_out_wrapper(self, self.do_insert_notification, notification)
+        return server_time_out_wrapper(self, self.do_insert_notification, notification)
 
     def update_notification(self, notification):
-        return helpers.server_time_out_wrapper(self, self.do_update_notification, id, notification)
+        return server_time_out_wrapper(self, self.do_update_notification,  notification)
 
     def update_user_settings(self,user_settings):
-        return helpers.server_time_out_wrapper(self, self.do_update_user_settings,user_settings)
+        return server_time_out_wrapper(self, self.do_update_user_settings,user_settings)
 
     def insert_user_settings(self, user_settings):
-        return helpers.server_time_out_wrapper(self, self.do_insert_user_channel, user_settings)
+        return server_time_out_wrapper(self, self.do_insert_user_channel, user_settings)
 
     def insert_user_channel(self, user_channel):
-        return helpers.server_time_out_wrapper(self, self.do_insert_user_channel, user_channel)
+        return server_time_out_wrapper(self, self.do_insert_user_channel, user_channel)
 
     def delete_notification(self, notification, throw_if_does_not_exist=True):
-        helpers.server_time_out_wrapper(self, self.do_delete_notification, notification,throw_if_does_not_exist )
+        server_time_out_wrapper(self, self.do_delete_notification, notification,throw_if_does_not_exist )
 
     def delete_user_settings(self, us):
-        helpers.server_time_out_wrapper(self, self.do_delete_user_settings, us)
+        server_time_out_wrapper(self, self.do_delete_user_settings, us)
 
     def do_insert_notification(self, notification):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         un = user_notification()
         un.user_id = notification.user_id
         un.user_name =notification. user_name
@@ -65,7 +65,7 @@ class UsersMongoStore(UsersStore, ABC):
         return user_notification.objects(id=un.id).first()
 
     def do_insert_user_channel(self, user_channel):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         uc = user_channel()
         uc.userId = uc.user_iduser_id
         uc.channel_type =  uc.user_idchannel_type
@@ -74,7 +74,7 @@ class UsersMongoStore(UsersStore, ABC):
         return uc.objects(id=uc.id).first()
 
     def do_insert_user_settings(self, user_setting):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         us = user_setting()
         us.userId = us.user_id
         us.preferred_currency = us.preferred_currency
@@ -82,19 +82,18 @@ class UsersMongoStore(UsersStore, ABC):
         return us.objects(id=us.id).first()
 
     def do_update_user_settings(self, user_setting):
-        helpers.do_connect(self.configuration)
-        us = user_setting.objects(id=id).first()
-        if_none_raise_with_id(id, us)
+        do_connect(self.configuration)
+        us = user_setting.objects(id=user_setting.id).first()
+        if_none_raise_with_id(user_setting.id, us)
         us.user_id =user_setting.user_id
         us.preferred_currency = user_setting.preferred_currency
         us.save()
         return user_setting.objects(id=id).first()
 
-    def do_update_notification(self, id,notification):
-        helpers.do_connect(self.configuration)
-        un = user_notification.objects(id=id).first()
-        if_none_raise_with_id(id, un)
-        un.id = id
+    def do_update_notification(self, notification):
+        do_connect(self.configuration)
+        un = user_notification.objects(id=notification.id).first()
+        if_none_raise_with_id(notification.id, un)
         un.userId = notification.user_id
         un.user_name = notification.user_name
         un.user_email = notification.user_email
@@ -110,11 +109,11 @@ class UsersMongoStore(UsersStore, ABC):
         return user_notification.objects(id=un.id).first()
 
     def delete_user_notification_by_source_id(self, source_id, throw_if_does_not_exist=True):
-        helpers.server_time_out_wrapper(self, self.do_delete_user_notification_by_source_id, source_id,
+        server_time_out_wrapper(self, self.do_delete_user_notification_by_source_id, source_id,
                                         throw_if_does_not_exist)
 
     def do_delete_user_notification_by_source_id(self, source_id, throw_if_does_not_exist=True):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         un = user_notification.objects(source_id=source_id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(id, un)
@@ -122,7 +121,7 @@ class UsersMongoStore(UsersStore, ABC):
             un.delete()
 
     def do_delete_notification(self, notif, throw_if_does_not_exist=True):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         un = user_notification.objects(id=notif.id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(id, un)
@@ -130,20 +129,20 @@ class UsersMongoStore(UsersStore, ABC):
             un.delete()
 
     def do_delete_user_settings(self, us):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         us = user_settings.objects(id=us.id).first()
         if_none_raise_with_id(us.id, us)
         us.delete()
 
     def do_fetch_user_channels(self, user_id):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         return user_notification.objects(Q(user_id=user_id))
 
     def do_fetch_user_settings(self, user_id):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         return user_settings.objects(Q(user_id=user_id))
 
     def do_fetch_notifications(self, items_count):
-        helpers.do_connect(self.configuration)
+        do_connect(self.configuration)
         return user_notification.objects()[:items_count]
 

@@ -56,10 +56,11 @@ class UsersRepository(Repository):
             operation=OPERATIONS.ADDED.name)
         )
 
-    def edit_notification(self, id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
+    def edit_notification(self, in_id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
                           check_times, is_active, channel_type, fields_to_send, source_id):
         self.notifications.append(
             user_notification(
+                id = in_id ,
             user_id=user_id, user_name=user_name, user_email=user_email, expression_to_evaluate=expression_to_evaluate,
             check_every_seconds=check_every_seconds, check_times=check_times, is_active=is_active,
             channel_type=channel_type, fields_to_send=fields_to_send, source_id=source_id,
