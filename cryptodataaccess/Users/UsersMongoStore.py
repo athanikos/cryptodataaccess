@@ -41,8 +41,8 @@ class UsersMongoStore(UsersStore, ABC):
     def insert_user_channel(self, user_channel):
         return helpers.server_time_out_wrapper(self, self.do_insert_user_channel, user_channel)
 
-    def delete_notification(self, notification):
-        helpers.server_time_out_wrapper(self, self.do_delete_notification, notification)
+    def delete_notification(self, notification, throw_if_does_not_exist=True):
+        helpers.server_time_out_wrapper(self, self.do_delete_notification, notification,throw_if_does_not_exist )
 
     def delete_user_settings(self, us):
         helpers.server_time_out_wrapper(self, self.do_delete_user_settings, us)
