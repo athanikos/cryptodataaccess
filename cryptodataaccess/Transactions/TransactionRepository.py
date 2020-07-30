@@ -1,6 +1,6 @@
 from cryptomodel.cryptostore import user_transaction, OPERATIONS
 
-from cryptodataaccess.Memory import Memory
+from cryptodataaccess.Memory import Memory, TRANSACTIONS_MEMORY_KEY
 from cryptodataaccess.Repository import Repository
 
 
@@ -15,7 +15,7 @@ class TransactionRepository(Repository):
                         on_remove=self.transaction_store.delete_transaction,
                         items=self.transactions
                         )
-        self.memories.append(memory)
+        self.memories[TRANSACTIONS_MEMORY_KEY] = memory
 
     def get_distinct_user_ids(self):
         return self.transaction_store.fetch_distinct_user_ids()
@@ -30,7 +30,7 @@ class TransactionRepository(Repository):
         t = user_transaction(user_id=user_id, volume=volume, symbol=symbol, value=value, price=price,
                              currency=currency, date=date, source=source, source_id=source_id,
                              operation=OPERATIONS.ADDED.name)
-        self.transactions.append(t)
+        self.memories[TRANSACTIONS_MEMORY_KEY].items.append(t)
         return t
 
     def edit_transaction(self, in_id, user_id, volume, symbol, value, price, currency, date, source, source_id):
@@ -38,25 +38,13 @@ class TransactionRepository(Repository):
                              user_id=user_id, volume=volume, symbol=symbol, value=value, price=price,
                              currency=currency, date=date, source=source, source_id=source_id,
                              operation=OPERATIONS.MODIFIED.name)
-        self.transactions.append(t)
+        self.memories[TRANSACTIONS_MEMORY_KEY].items.append(t)
         return t
 
     def remove_transaction(self, in_id):
-        trans = next((x for x in self.transactions if x.id == in_id), None)
-        self.mark_deleted(trans)
+        self.mark_deleted(memory_key=TRANSACTIONS_MEMORY_KEY,
+                          on_select=self.transaction_store.fetch_transaction, id_value=in_id, id_name="id")
 
-    def remove_transaction_by_source_id(self, source_id, throw_if_does_not_exist=True):
-        trans = next((x for x in self.transactions if x.source_id == source_id), None)
-        self.mark_deleted(trans)
-
-    # reuse across repos
-    def mark_deleted(self, trans):
-        if trans is None:
-            trans = self.get_transaction(trans.id)
-            if trans is None:
-                exit
-            else:
-                trans.operation = OPERATIONS.REMOVED.name
-                self.transactions.append(trans)
-        else:
-            trans.operation = OPERATIONS.REMOVED.name
+    def remove_transaction_by_source_id(self, source_id):
+        self.mark_deleted(memory_key=TRANSACTIONS_MEMORY_KEY,
+                          on_select=self.transaction_store.fetch_transaction, id_value=source_id, id_name="source_id")

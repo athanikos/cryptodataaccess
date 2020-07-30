@@ -26,17 +26,30 @@ class UsersMongoStore(UsersStore, ABC):
     def fetch_notifications(self, items_count):
         return server_time_out_wrapper(self, self.do_fetch_notifications, items_count)
 
+    def fetch_notification_by_id(self, id):
+        return server_time_out_wrapper(self, self.do_fetch_notification_by_id, id)
+
+    def fetch_user_channel_by_id(self, id):
+        return server_time_out_wrapper(self, self.do_fetch_user_channel_by_id, id)
+
+
     def insert_notification(self, notification):
         return server_time_out_wrapper(self, self.do_insert_notification, notification)
 
     def update_notification(self, notification):
         return server_time_out_wrapper(self, self.do_update_notification,  notification)
 
+    def fetch_user_settings_by_id(self, id):
+        return server_time_out_wrapper(self, self.do_fetch_user_settings_by_id, id)
+
     def update_user_settings(self,user_settings):
         return server_time_out_wrapper(self, self.do_update_user_settings,user_settings)
 
     def insert_user_settings(self, user_settings):
         return server_time_out_wrapper(self, self.do_insert_user_settings, user_settings)
+
+    def fetch_user_user_channel_by_id(self, id):
+        return server_time_out_wrapper(self, self.do_fetch_user_channel_by_id, id)
 
     def insert_user_channel(self, user_channel):
         return server_time_out_wrapper(self, self.do_insert_user_channel, user_channel)
@@ -149,4 +162,16 @@ class UsersMongoStore(UsersStore, ABC):
     def do_fetch_notifications(self, items_count):
         do_connect(self.configuration)
         return user_notification.objects()[:items_count]
+
+    def do_fetch_user_channel_by_id(self, id):
+        do_connect(self.configuration)
+        return user_channel.objects(Q(id=id))
+
+    def do_fetch_user_settings_by_id(self, id):
+        do_connect(self.configuration)
+        return user_settings.objects(Q(id=id))
+
+    def do_fetch_notification_by_id(self, id):
+        do_connect(self.configuration)
+        return user_notification.objects(Q(id=id))
 

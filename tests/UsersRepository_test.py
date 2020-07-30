@@ -6,6 +6,7 @@ from cryptomodel.cryptostore import user_channel, user_notification, user_settin
 from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates
 
+from cryptodataaccess.Memory import USER_NOTIFICATIONS_MEMORY_KEY, USER_SETTINGS_MEMORY_KEY, USER_CHANNELS_MEMORY_KEY
 from cryptodataaccess.Rates.RatesMongoStore import RatesMongoStore
 from cryptodataaccess.Users.UsersMongoStore import UsersMongoStore
 from cryptodataaccess.config import configure_app
@@ -81,7 +82,7 @@ def test_insert_user_channel():
     repo.add_user_channel(user_id=1, chat_id='1', channel_type='telegram',
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    uc = repo.memories[2].items[0]
+    uc = repo.memories[USER_CHANNELS_MEMORY_KEY].items[0]
     assert (uc.channel_type == 'telegram')
     assert (uc.operation == OPERATIONS.ADDED.name)
 
@@ -94,7 +95,7 @@ def test_insert_user_setting():
     user_settings.objects.all().delete()
     repo.add_user_settings(user_id=1, preferred_currency='da', source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    uc = repo.memories[1].items[0]
+    uc = repo.memories[USER_SETTINGS_MEMORY_KEY].items[0]
     assert (uc.preferred_currency == 'da')
     assert (uc.operation == OPERATIONS.ADDED.name)
 
@@ -127,7 +128,7 @@ def test_update_notification():
                           fields_to_send="dsd",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    un = repo.memories[0].items[0]
+    un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
 
     repo.edit_notification(in_id=un.id,
                            user_id=1, user_name='username2', user_email='email',
@@ -136,7 +137,7 @@ def test_update_notification():
                            fields_to_send="dsd",
                            source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    un = repo.memories[0].items[1]
+    un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[1]
 
     assert (un.user_name == "username2")
 
@@ -155,7 +156,7 @@ def test_delete_notification_when_exists():
                           is_active=True, channel_type='telegram', fields_to_send="dsd",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    ut = repo.memories[0].items[0]
+    ut = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
 
     assert (len(user_notification.objects) == 1)
     ut = repo.remove_notification(ut.id)
@@ -178,7 +179,7 @@ def test_delete_user_notification_when_exists_by_source_id():
                           fields_to_send="dsd",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    ut = repo.memories[0].items[0]
+    ut = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
     assert (len(user_notification.objects) == 1)
     store.do_delete_user_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
     assert (len(user_notification.objects) == 0)
