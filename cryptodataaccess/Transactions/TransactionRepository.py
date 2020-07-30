@@ -52,7 +52,7 @@ class TransactionRepository(Repository):
     # reuse across repos
     def mark_deleted(self, trans):
         if trans is None:
-            trans = self.get_transaction(id)
+            trans = self.get_transaction(trans.id)
             if trans is None:
                 exit
             else:
