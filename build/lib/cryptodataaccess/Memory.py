@@ -2,6 +2,10 @@
 Represents an item list contained within Repository
 keeps the set of methods executed for add/edit/delete
 """
+TRANSACTIONS_MEMORY_KEY = "transactions"
+USER_NOTIFICATIONS_MEMORY_KEY = "notifications"
+USER_CHANNELS_MEMORY_KEY = "channels"
+USER_SETTINGS_MEMORY_KEY = "settings"
 
 
 class Memory:

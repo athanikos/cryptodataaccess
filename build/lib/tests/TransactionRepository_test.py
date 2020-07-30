@@ -3,6 +3,7 @@ from bson import ObjectId
 from cryptomodel.cryptostore import user_transaction
 from cryptomodel.operations import OPERATIONS
 
+from cryptodataaccess.Memory import TRANSACTIONS_MEMORY_KEY
 from cryptodataaccess.Transactions.TransactionMongoStore import TransactionMongoStore
 from cryptodataaccess.config import configure_app
 from cryptodataaccess.Transactions.TransactionRepository import TransactionRepository
@@ -28,7 +29,7 @@ def test_insert_transaction():
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                               source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    ut = repo.memories[0].items[0]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
     assert (ut.user_id == 1)
     assert (ut.symbol == "OXT")
     assert (len(user_transaction.objects) == 1)
@@ -45,15 +46,15 @@ def test_update_transaction():
                          source_id=ObjectId('666f6f2d6261722d71757578'))
 
     assert (len(repo.memories) == 1)
-    assert (len(repo.memories[0].items) == 1)
+    assert (len(repo.memories[TRANSACTIONS_MEMORY_KEY].items) == 1)
 
     repo.commit()
-    ut = repo.memories[0].items[0]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
 
     repo.edit_transaction(ut.id, 1, 1, 'OXT2', 1, 1, "EUR", "2020-01-01", "kraken",
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    ut = repo.memories[0].items[1]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[1]
 
     assert (ut.user_id == 1)
     assert (ut.symbol == "OXT2")
@@ -105,7 +106,7 @@ def test_delete_transaction_when_exists():
     repo.commit()
     assert (len(user_transaction.objects) == 1)
 
-    ut = repo.memories[0].items[0]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
 
     repo.remove_transaction(ut.id)
     repo.commit()
@@ -124,7 +125,7 @@ def test_delete_transaction_when_exists_by_source_id():
                               source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     assert (len(user_transaction.objects) == 1)
-    ut = repo.memories[0].items[0]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
     repo.remove_transaction_by_source_id(source_id=ut.source_id)
     repo.commit()
     assert (len(user_transaction.objects) == 0)
@@ -140,7 +141,7 @@ def test_fetch_transaction():
                               source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
 
-    ut = repo.memories[0].items[0]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
     assert (ut.user_id == 1)
     assert (ut.symbol == "OXT")
     assert (ut.currency == "USD")
@@ -149,7 +150,7 @@ def test_fetch_transaction():
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                          source_id=None)
     repo.commit()
-    ut = repo.memories[0].items[1]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[1]
     ut = repo.get_transaction(ut.id)
     assert (ut.source_id is None)
 
