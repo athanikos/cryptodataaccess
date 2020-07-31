@@ -87,6 +87,8 @@ class TransactionMongoStore(TransactionStore):
         trans.source = in_trans.source
         trans.source_id = in_trans.source_id
         trans.operation = in_trans.operation
+        trans.is_valid = in_trans.is_valid
+        trans.invalid_reason = in_trans.invalid_reason
         trans.save()
         return user_transaction.objects(id=trans.id).first()
 
