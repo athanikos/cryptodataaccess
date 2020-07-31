@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='cryptodataaccess-athanikos',
-    version="0.2.2",
+    version="0.2.3",
     license='MIT License',
     author='Nikos Athanasakis',
     packages=setuptools.find_packages(),

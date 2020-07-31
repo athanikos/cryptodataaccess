@@ -70,7 +70,7 @@ class UsersRepository(Repository):
         return n
 
     def add_user_settings(self, user_id, preferred_currency, source_id):
-        uc = user_settings(userId=user_id, preferred_currency=preferred_currency, source_id=source_id,
+        uc = user_settings(user_id=user_id, preferred_currency=preferred_currency, source_id=source_id,
                            operation=OPERATIONS.ADDED.name)
         self.user_settings.append(uc)
         return uc
