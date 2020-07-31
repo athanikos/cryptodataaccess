@@ -32,7 +32,7 @@ class TransactionRepository(Repository):
     def add_transaction(self, user_id, volume, symbol, value, price, currency, date, source, source_id):
         t = user_transaction(user_id=user_id, volume=volume, symbol=symbol, value=value, price=price,
                              currency=currency, date=date, source=source, source_id=source_id,
-                             operation=OPERATIONS.ADDED.name)
+                             operation=OPERATIONS.ADDED.name, is_valid=True, invalid_reason="")
         self.memories[TRANSACTIONS_MEMORY_KEY].items.append(t)
         return t
 

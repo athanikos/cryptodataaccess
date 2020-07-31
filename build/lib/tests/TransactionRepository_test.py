@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import mock
 from bson import ObjectId
 from cryptomodel.cryptostore import user_transaction
@@ -210,3 +212,9 @@ def test_get_transaction_by_date():
 
     ts = repo.get_transactions_before_date(1,"2019-12-31")
     assert (len(ts) == 0)
+
+    dt_now = datetime.today()
+
+    ts = repo.get_transactions_before_date(1,dt_now)
+    assert (len(ts) == 1)
+
