@@ -188,3 +188,25 @@ def test_fetch_distinct_user_ids():
     repo.commit()
     items = repo.get_distinct_user_ids()
     assert (len(items) == 4)
+
+
+def test_get_transaction_by_date():
+    config = configure_app()
+    store = TransactionMongoStore(config, mock_log)
+    repo = TransactionRepository(store)
+    do_connect(config)
+    user_transaction.objects.all().delete()
+
+    repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",
+                              source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.commit()
+    assert (len(user_transaction.objects) == 1)
+
+    ts = repo.get_transactions_before_date(1,"2019-01-01")
+    assert (len(ts) == 0)
+
+    ts = repo.get_transactions_before_date(1,"2020-01-01")
+    assert (len(ts) == 1)
+
+    ts = repo.get_transactions_before_date(1,"2019-12-31")
+    assert (len(ts) == 0)

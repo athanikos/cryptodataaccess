@@ -23,6 +23,10 @@ class TransactionStore(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def fetch_transactions_before_date(self, user_id, date):
+        pass
+
+    @abstractmethod
     def insert_transaction(self, user_id, volume, symbol, value, price, currency, date, source, source_id, operation):
         pass
 
