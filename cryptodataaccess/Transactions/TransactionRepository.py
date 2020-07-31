@@ -26,6 +26,9 @@ class TransactionRepository(Repository):
     def get_transactions(self, user_id):
         return self.transaction_store.fetch_transactions(user_id)
 
+    def get_transactions_before_date(self, user_id, date):
+        return self.transaction_store.fetch_transactions_before_date(user_id, date)
+
     def add_transaction(self, user_id, volume, symbol, value, price, currency, date, source, source_id):
         t = user_transaction(user_id=user_id, volume=volume, symbol=symbol, value=value, price=price,
                              currency=currency, date=date, source=source, source_id=source_id,

@@ -93,7 +93,10 @@ class TransactionMongoStore(TransactionStore):
 
     def do_fetch_transaction(self, id):
         helpers.do_connect(self.configuration)
-        return user_transaction.objects(Q(id=id))[0]
+        trans = user_transaction.objects(Q(id=id))
+        if len(trans) == 1:
+            return user_transaction.objects(Q(id=id))[0]
+        return None
 
     def do_fetch_distinct_user_ids(self):
         helpers.do_connect(self.configuration)

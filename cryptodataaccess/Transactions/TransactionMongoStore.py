@@ -2,7 +2,7 @@ from mongoengine import Q
 from cryptodataaccess.Transactions.TransactionStore import TransactionStore
 from cryptodataaccess.helpers import if_none_raise_with_id
 from cryptodataaccess import helpers
-from cryptomodel.cryptostore import  user_transaction
+from cryptomodel.cryptostore import user_transaction
 
 
 class TransactionMongoStore(TransactionStore):
@@ -19,6 +19,9 @@ class TransactionMongoStore(TransactionStore):
 
     def fetch_transactions(self, user_id):
         return helpers.server_time_out_wrapper(self, self.do_fetch_transactions, user_id)
+
+    def fetch_transactions_before_date(self, user_id, date):
+        return helpers.server_time_out_wrapper(self, self.do_fetch_transactions_before_date, user_id, date)
 
     def fetch_transactions(self, user_id):
         return helpers.server_time_out_wrapper(self, self.do_fetch_transactions, user_id)
@@ -90,6 +93,12 @@ class TransactionMongoStore(TransactionStore):
     def do_fetch_transactions(self, user_id):
         helpers.do_connect(self.configuration)
         return user_transaction.objects(Q(user_id=user_id))
+
+    def do_fetch_transactions_before_date(self, user_id, date):
+        helpers.do_connect(self.configuration)
+        return user_transaction.objects(Q(user_id=user_id) &
+                                        Q(date__lte=date)
+                                        )
 
     def do_fetch_transaction(self, id):
         helpers.do_connect(self.configuration)
