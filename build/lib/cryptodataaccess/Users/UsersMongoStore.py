@@ -91,7 +91,7 @@ class UsersMongoStore(UsersStore, ABC):
     def do_insert_user_settings(self, in_uc):
         do_connect(self.configuration)
         us = user_settings()
-        us.userId = in_uc.userId
+        us.user_id = in_uc.user_id
         us.preferred_currency = in_uc.preferred_currency
         us.operation = in_uc.operation
         us.source_id = in_uc.source_id
@@ -111,7 +111,7 @@ class UsersMongoStore(UsersStore, ABC):
         do_connect(self.configuration)
         un = user_notification.objects(id=notification.id).first()
         if_none_raise_with_id(notification.id, un)
-        un.userId = notification.user_id
+        un.user_id = notification.user_id
         un.user_name = notification.user_name
         un.user_email = notification.user_email
         un.expression_to_evaluate =notification. expression_to_evaluate
