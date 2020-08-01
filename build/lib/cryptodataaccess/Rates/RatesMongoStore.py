@@ -26,7 +26,9 @@ class RatesMongoStore(RatesStore):
         return self.fetch_symbol_rates_for_date(dt_now)
 
     def fetch_symbol_rates_for_date(self, dt):
-        dt_str = dt.strftime(DATE_FORMAT)
+        dt_str = dt
+        if isinstance(dt, datetime):
+            dt_str = dt.strftime(DATE_FORMAT)
         srs = SymbolRates(dt_str)
         latest_prices = self.fetch_latest_prices_to_date(dt_str)
         for coin in latest_prices[0].coins:

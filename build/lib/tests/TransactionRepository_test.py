@@ -29,7 +29,7 @@ def test_insert_transaction():
     do_connect(config)
     user_transaction.objects.all().delete()
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                              source_id=ObjectId('666f6f2d6261722d71757578'))
+                              source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
     ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
     assert (ut.user_id == 1)
@@ -45,7 +45,7 @@ def test_update_transaction():
     do_connect(config)
     user_transaction.objects.all().delete()
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
 
     assert (len(repo.memories) == 1)
     assert (len(repo.memories[TRANSACTIONS_MEMORY_KEY].items) == 1)
@@ -54,7 +54,7 @@ def test_update_transaction():
     ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
 
     repo.edit_transaction(ut.id, 1, 1, 'OXT2', 1, 1, "EUR", "2020-01-01", "kraken",
-                          source_id=ObjectId('666f6f2d6261722d71757578'))
+                          source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
     ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[1]
 
@@ -72,7 +72,7 @@ def test_update_transaction_when_does_not_exist_throws_ValueError():
     user_transaction.objects.all().delete()
     with pytest.raises(ValueError):
         repo.edit_transaction(ObjectId('666f6f2d6261722d71757578'), 1, 1, 'OXT', "EUR", 1, 1, "2020-01-01",
-                              "kraken", source_id=ObjectId('666f6f2d6261722d71757578'))
+                              "kraken", source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
         repo.commit()
 
 def test_delete_transaction_when_does_not_exist_throws_ValueError():
@@ -104,7 +104,7 @@ def test_delete_transaction_when_exists():
     repo = TransactionRepository(store)
     do_connect(config)
     repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
     assert (len(user_transaction.objects) == 1)
 
@@ -124,7 +124,7 @@ def test_delete_transaction_when_exists_by_source_id():
     user_transaction.objects.all().delete()
 
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",
-                              source_id=ObjectId('666f6f2d6261722d71757578'))
+                              source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
     assert (len(user_transaction.objects) == 1)
     ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
@@ -140,7 +140,7 @@ def test_fetch_transaction():
     do_connect(config)
     user_transaction.objects.all().delete()
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                              source_id=ObjectId('666f6f2d6261722d71757578'))
+                              source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
 
     ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
@@ -150,7 +150,7 @@ def test_fetch_transaction():
     assert (ut.operation == OPERATIONS.ADDED.name)
     assert (ut.source_id == ObjectId('666f6f2d6261722d71757578'))
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=None)
+                         source_id=None, transaction_type="TRADE", order_type="BUY")
     repo.commit()
     ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[1]
     ut = repo.get_transaction(ut.id)
@@ -164,29 +164,29 @@ def test_fetch_distinct_user_ids():
     do_connect(config)
     user_transaction.objects.all().delete()
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
 
     repo.commit()
     items = repo.get_distinct_user_ids()
     assert (len(items) == 1)
     user_transaction.objects.all().delete()
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.add_transaction(12, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
 
     repo.commit()
     items = repo.get_distinct_user_ids()
     assert (len(items) == 2)
     user_transaction.objects.all().delete()
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.add_transaction(12, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.add_transaction(3, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.add_transaction(122, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
-                         source_id=ObjectId('666f6f2d6261722d71757578'))
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
     items = repo.get_distinct_user_ids()
     assert (len(items) == 4)
@@ -200,7 +200,7 @@ def test_get_transaction_by_date():
     user_transaction.objects.all().delete()
 
     repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",
-                              source_id=ObjectId('666f6f2d6261722d71757578'))
+                              source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
     assert (len(user_transaction.objects) == 1)
 
