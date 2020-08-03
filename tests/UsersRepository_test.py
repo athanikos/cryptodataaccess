@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import mock
 from bson import ObjectId
 from cryptomodel.operations import OPERATIONS
@@ -13,6 +15,8 @@ from cryptodataaccess.config import configure_app
 from cryptodataaccess.Users.UsersRepository import UsersRepository
 from cryptodataaccess.Rates.RatesRepository import RatesRepository
 import pytest
+
+from cryptodataaccess.helpers import convert_to_int_timestamp
 from tests.helpers import insert_prices_record, insert_exchange_record
 from cryptodataaccess import helpers
 
@@ -63,10 +67,15 @@ def test_fetch_prices_and_symbols():
 
     prices.objects.all().delete()
     insert_prices_record()
-    objs = repo.fetch_latest_prices_to_date('2020-07-03')  # bound case : timestamp is saved as string so it cant find
-    # it because  of the time stuff (either+1 day?)
-    assert (len(objs) == 0)
-    objs = repo.fetch_latest_prices_to_date('2020-07-04')
+
+    dt = convert_to_int_timestamp(datetime(year=2020, month = 7 , day = 3 ))
+    objs = repo.fetch_latest_prices_to_date(dt)
+    assert (len(objs) == 1)
+    objs = repo.fetch_latest_prices_to_date(dt)
+
+    dt = convert_to_int_timestamp(datetime(year=2020, month=7, day=4))
+
+
     assert (len(objs) == 1)
     symbols = repo.fetch_symbols()
     assert (len(symbols) == 100)

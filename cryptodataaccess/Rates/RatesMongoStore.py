@@ -3,9 +3,9 @@ from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates, Q
 from cryptomodel.readonly import SymbolRates
 from cryptodataaccess.Rates.RatesStore import RatesStore
-from cryptodataaccess.helpers import server_time_out_wrapper, do_connect
+from cryptodataaccess.helpers import server_time_out_wrapper, do_connect, convert_to_int_timestamp
 
-DATE_FORMAT = "%Y-%m-%d"
+DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 
 class RatesMongoStore(RatesStore):
@@ -16,21 +16,19 @@ class RatesMongoStore(RatesStore):
 
     def fetch_symbols(self):
         symbols = {}
-        latest_prices = self.fetch_latest_prices_to_date(datetime.today().strftime(DATE_FORMAT))
+        latest_prices = self.fetch_latest_prices_to_date( convert_to_int_timestamp(datetime.today()))
         for coin in latest_prices[0].coins:
             symbols.update({coin.symbol: coin.name})
         return symbols
 
     def fetch_symbol_rates(self):
-        dt_now = datetime.today()
+        dt_now = convert_to_int_timestamp(datetime.today())
         return self.fetch_symbol_rates_for_date(dt_now)
 
     def fetch_symbol_rates_for_date(self, dt):
-        dt_str = dt
-        if isinstance(dt, datetime):
-            dt_str = dt.strftime(DATE_FORMAT)
-        srs = SymbolRates(dt_str)
-        latest_prices = self.fetch_latest_prices_to_date(dt_str)
+
+        srs = SymbolRates(dt)
+        latest_prices = self.fetch_latest_prices_to_date(dt)
         for coin in latest_prices[0].coins:
             srs.add_rate(coin.symbol, coin.quote.eur)
         return srs

@@ -1,12 +1,4 @@
-from datetime import datetime
-from cryptomodel.coinmarket import prices
-from cryptomodel.fixer import exchange_rates
-from cryptomodel.readonly import SymbolRates
-from mongoengine import Q
-
-from cryptodataaccess.Memory import Memory
 from cryptodataaccess.Repository import Repository
-from cryptodataaccess.helpers import server_time_out_wrapper, do_connect
 
 DATE_FORMAT = "%Y-%m-%d"
 

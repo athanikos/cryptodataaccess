@@ -5,9 +5,9 @@ import logging
 
 
 def do_connect(configuration):
-        url = 'mongodb://' + configuration.USERNAME + ':' + configuration.PASSWORD + '@' \
-              + configuration.SERVERNAME + ':' + str(configuration.PORT) + '/?authSource=admin'
-        conn = connect(db=configuration.DATABASE, username=configuration.USERNAME, host=url)
+    url = 'mongodb://' + configuration.USERNAME + ':' + configuration.PASSWORD + '@' \
+          + configuration.SERVERNAME + ':' + str(configuration.PORT) + '/?authSource=admin'
+    conn = connect(db=configuration.DATABASE, username=configuration.USERNAME, host=url)
 
 
 def get_url(configuration):
@@ -24,6 +24,10 @@ def server_time_out_wrapper(repository, method_to_call, *args):
     except mongoengine.connection.ConnectionFailure as cf:
         repository.log_error(exception=cf, web_method_name=str(method_to_call), cfg=repository.configuration)
         raise mongoengine.connection.ConnectionFailure(cf)
+
+
+def convert_to_int_timestamp(dt):
+    return int(dt.timestamp()) * 1000
 
 
 def if_none_raise_with_id(_id, trans):
