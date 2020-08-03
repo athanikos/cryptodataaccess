@@ -92,7 +92,7 @@ class TransactionMongoStore(TransactionStore):
         trans.is_valid = in_trans.is_valid
         trans.invalid_reason = in_trans.invalid_reason
         trans.type = in_trans.type
-        trans.order_type = in_trans.order_type 
+        trans.order_type = in_trans.order_type
         trans.save()
         return user_transaction.objects(id=trans.id).first()
 
