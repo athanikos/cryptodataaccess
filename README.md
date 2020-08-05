@@ -12,6 +12,13 @@ Repositories for cryptomodel
 
 
 
+
+##### unit testing setup 
+> import keyring
+> keyring.set_password("cryptodataaccess","USERNAME","cryptoAdmin")
+> keyring.set_password("cryptodataaccess","USERNAME","test")
+> keyring.set_password("cryptodataaccess","test","test")
+
 #####
 start mongo 
 > sudo service mongod start 
