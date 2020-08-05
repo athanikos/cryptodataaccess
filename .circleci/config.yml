@@ -1,0 +1,52 @@
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.1
+working_directory: ~/cryptodataaccess
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.4  # primary container for this build
+      - image: circleci/mongo:4.2.3
+      - image: spotify/kafka
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: admin
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run:
+          name: Install Python dependencies in a venv
+          command: |
+            virtualenv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            python setup_dev_user.py
+      - run:
+          name: "Setup custom environment variables"
+          command: |
+            echo 'export FLASK_ENV=cryptodataaccess.config.DevelopmentConfig'
+      - run:
+          name: Wait for Mongo to start
+          command: dockerize -wait tcp://127.0.0.1:27017 -timeout 120s
+      - run:
+          name:  install mongo clients
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+            echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+            sudo apt-get update
+            sudo apt-get install -y --force-yes mongodb-org-shell
+      - run:
+          name: Configure MongoDB
+          command: |
+            mongo admin --eval 'db.createUser( { user: "admin", pwd: "admin", roles: [ { role: "userAdminAnyDatabase", db: "admin" } ],  mechanisms:[ "SCRAM-SHA-1"]  } )'
+      - run:
+          name: Runnning tests
+          command: |
+            . venv/bin/activate
+            py.test -vv cryptodataaccess/tests
+      - run:
+          name: Code coverage
+          command: |
+             . venv/bin/activate
+             py.test --cov=cryptodataaccess --cov-config=.coveragerc

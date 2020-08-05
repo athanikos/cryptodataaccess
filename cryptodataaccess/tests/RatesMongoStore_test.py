@@ -3,15 +3,13 @@ from datetime import datetime
 import mock
 from cryptomodel.coinmarket import prices
 from cryptomodel.cryptomodel import user_transaction, exchange_rates
-from mongoengine import Q
 
 from cryptodataaccess.Rates.RatesMongoStore import RatesMongoStore
 from cryptodataaccess.Rates.RatesRepository import RatesRepository
-from cryptodataaccess.Rates.RatesStore import RatesStore
 from cryptodataaccess.config import configure_app
 import pytest
 from cryptodataaccess.helpers import do_connect, convert_to_int_timestamp
-from tests.helpers import insert_prices_record, insert_exchange_record, insert_prices_record_with_method, \
+from cryptodataaccess.tests.helpers import insert_prices_record, insert_exchange_record, insert_prices_record_with_method, \
     get_prices20200812039_record, get_prices20200801T2139_record
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'

@@ -3,7 +3,6 @@ from datetime import datetime
 import mock
 from bson import ObjectId
 from cryptomodel.operations import OPERATIONS
-from pymongo.errors import ServerSelectionTimeoutError
 from cryptomodel.cryptostore import user_channel, user_notification, user_settings
 from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates
@@ -17,7 +16,7 @@ from cryptodataaccess.Rates.RatesRepository import RatesRepository
 import pytest
 
 from cryptodataaccess.helpers import convert_to_int_timestamp
-from tests.helpers import insert_prices_record, insert_exchange_record
+from cryptodataaccess.tests.helpers import insert_prices_record, insert_exchange_record
 from cryptodataaccess import helpers
 
 

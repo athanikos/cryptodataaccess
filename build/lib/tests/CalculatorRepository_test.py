@@ -1,10 +1,8 @@
 import mock
 from cryptomodel.coinmarket import  prices
-from mongoengine import  Q
 from cryptodataaccess.config import configure_app
 import pytest
 from cryptodataaccess.helpers import do_connect
-from tests.helpers import insert_prices_record
 
 
 @pytest.fixture(scope='module')
