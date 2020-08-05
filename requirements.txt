@@ -14,4 +14,4 @@ jsonpickle
 apscheduler
 cryptomodel-athanikos==2.4.6
 werkzeug
-notifiers
+keyrings.alt
