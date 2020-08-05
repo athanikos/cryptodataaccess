@@ -33,6 +33,6 @@ class Repository:
                 exit
             else:
                 trans.operation = OPERATIONS.REMOVED.name
-                self.memories[memory_key].append(item)
+                self.memories[memory_key] = item
         else:
             item.operation = OPERATIONS.REMOVED.name
