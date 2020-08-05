@@ -103,3 +103,7 @@ class UsersRepository(Repository):
     def remove_user_setting(self, in_id):
         self.mark_deleted(memory_key=USER_CHANNELS_MEMORY_KEY,
                           on_select=self.users_store.fetch_user_settings_by_id, id_value=in_id, id_name="id")
+
+    def remove_notification_by_source_id(self, source_id):
+        self.mark_deleted(memory_key=USER_NOTIFICATIONS_MEMORY_KEY,
+                          on_select=self.users_store.fetch_notification_by_id, id_value=source_id, id_name="source_id")

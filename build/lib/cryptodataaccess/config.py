@@ -17,7 +17,7 @@ class BaseConfig(object):
     DATABASE = DB
     USERNAME = ""
     PASSWORD = ""
-    LOGS_PATH = '../CryptoCalculatorService/logs/CryptoModel.log'
+    LOGS_PATH = '../cryptodataaccess/logs/cryptodataaccess.log'
     KAFKA_BROKERS = KAFKA_BROKERS
     TRANSACTIONS_TOPIC_NAME = TRANSACTIONS_TOPIC_NAME
 
@@ -30,7 +30,7 @@ class DevelopmentConfig(BaseConfig):
     DATABASE = DB
     USERNAME = "test"
     PASSWORD = "test"
-    LOGS_PATH = '../CryptoCalculatorService/logs/CryptoModel.log'
+    LOGS_PATH = '../cryptodataaccess/logs/cryptodataaccess.log'
     KAFKA_BROKERS = KAFKA_BROKERS
     TRANSACTIONS_TOPIC_NAME = TRANSACTIONS_TOPIC_NAME
 
@@ -43,15 +43,15 @@ class ProductionConfig(BaseConfig):
     DATABASE = DB
     USERNAME = ""
     PASSWORD = ""
-    LOGS_PATH = '../CryptoCalculatorService/logs/CryptoUsersService.log'
+    LOGS_PATH = '../cryptodataaccess/logs/cryptodataaccess.log'
     KAFKA_BROKERS = KAFKA_BROKERS
     TRANSACTIONS_TOPIC_NAME = TRANSACTIONS_TOPIC_NAME
 
 
 config = {
-    "development": "CryptoCalculatorService.config.DevelopmentConfig",
-    "production": "CryptoCalculatorService.config.ProductionConfig",
-    "default": "CryptoCalculatorService.config.DevelopmentConfig",
+    "development": "cryptodataaccess.config.DevelopmentConfig",
+    "production": "cryptodataaccess.config.ProductionConfig",
+    "default": "cryptodataaccess.config.DevelopmentConfig",
 }
 
 
