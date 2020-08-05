@@ -42,7 +42,7 @@ class RatesMongoStore(RatesStore):
     def do_fetch_latest_prices_to_date(self, before_date):
         do_connect(self.configuration)
         return prices.objects(Q(status__timestamp__lte=before_date)).order_by(
-            '-status__timestamp')[:10]
+            '-status__timestamp')[:1]
 
     def do_fetch_latest_exchange_rates_to_date(self, before_date):
         do_connect(self.configuration)
