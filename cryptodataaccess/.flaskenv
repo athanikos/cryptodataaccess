@@ -1,1 +1,1 @@
-FLASK_ENV=development
+FLASK_ENV=cryptodataaccess.config.DevelopmentConfig
