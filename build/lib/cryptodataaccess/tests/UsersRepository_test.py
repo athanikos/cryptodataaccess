@@ -145,7 +145,7 @@ def test_update_notification():
                            fields_to_send="dsd",
                            source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
-    un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[1]
+    un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
 
     assert (un.user_name == "username2")
 
@@ -221,3 +221,47 @@ def test_Users_Repository_create():
 
     assert (repo.memories[USER_NOTIFICATIONS_MEMORY_KEY] is not None)
     assert (repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items is not None)
+
+
+def test_do_delete_notification_when_does_not_exist_should_not_throw():
+    config = configure_app()
+    store = UsersMongoStore(config, mock_log)
+
+    noti = user_notification()
+    noti.id = ObjectId('666f6f2d6261722d71757578')
+    noti.source_id =ObjectId('666f6f2d6261722d71757578')
+    store.delete_notification(notification=noti,throw_if_does_not_exist=False)
+    assert(1==1)
+
+
+def test_remove_notification_by_source_id_should_not_add_any_object_to_memory_when_does_not_exist_in_db_and_mem():
+    config = configure_app()
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
+    helpers.do_connect(config)
+    user_notification.objects.all().delete()
+
+    store.do_delete_user_notification_by_source_id(source_id= ObjectId('666f6f2d6261722d71757578'), throw_if_does_not_exist=False)
+    assert (len(repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items)==0)
+
+def test_delete_notification_by_source_id_should_not_add_any_object_to_memory_when_does_not_exist_in_db_and_mem():
+    config = configure_app()
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
+    helpers.do_connect(config)
+    user_notification.objects.all().delete()
+
+    store.do_delete_user_notification_by_source_id(source_id= ObjectId('666f6f2d6261722d71757578'), throw_if_does_not_exist=False)
+    assert (len(repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items)==0)
+
+
+def test_remove_notification_by_source_id_should_not_add_any_object_to_memory_when_does_not_exist_in_db_and_mem():
+    config = configure_app()
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
+    helpers.do_connect(config)
+    user_notification.objects.all().delete()
+
+    repo.remove_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
+    assert (len(repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items) == 0)
+

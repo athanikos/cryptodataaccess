@@ -15,3 +15,4 @@ class Memory:
         self.on_remove = on_remove
         self.on_edit = on_edit
         self.items = items
+        self.handled_items = []

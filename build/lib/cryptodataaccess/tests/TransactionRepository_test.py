@@ -31,6 +31,7 @@ def test_insert_transaction():
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                               source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
+
     ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
     assert (ut.user_id == 1)
     assert (ut.symbol == "OXT")
@@ -56,7 +57,7 @@ def test_update_transaction():
     repo.edit_transaction(ut.id, 1, 1, 'OXT2', 1, 1, "EUR", "2020-01-01", "kraken",
                           source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
-    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[1]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
 
     assert (ut.user_id == 1)
     assert (ut.symbol == "OXT2")
@@ -152,7 +153,7 @@ def test_fetch_transaction():
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                          source_id=None, transaction_type="TRADE", order_type="BUY")
     repo.commit()
-    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[1]
+    ut = repo.memories[TRANSACTIONS_MEMORY_KEY].items[0]
     ut = repo.get_transaction(ut.id)
     assert (ut.source_id is None)
 

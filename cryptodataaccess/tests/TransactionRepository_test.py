@@ -219,3 +219,23 @@ def test_get_transaction_by_date():
     ts = repo.get_transactions_before_date(1,dt_now)
     assert (len(ts) == 1)
 
+
+
+
+def test_remove_and_add():
+    config = configure_app()
+    store = TransactionMongoStore(config, mock_log)
+    repo = TransactionRepository(store)
+    do_connect(config)
+    user_transaction.objects.all().delete()
+
+
+
+    repo.remove_transaction_by_source_id( source_id=ObjectId('666f6f2d6261722d71757578'))
+
+    repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",
+                         source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
+
+    repo.commit()
+
+    assert (len(user_transaction.objects) == 1)
