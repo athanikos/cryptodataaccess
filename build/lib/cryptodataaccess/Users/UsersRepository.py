@@ -12,9 +12,9 @@ class UsersRepository(Repository):
 
     def __init__(self, users_store):
         self.users_store = users_store
+        self.notifications = []
         super(UsersRepository, self).__init__()
 
-        self.notifications = []
         notification_memory = Memory(on_add=self.users_store.insert_notification,
                                      on_edit=self.users_store.update_notification,
                                      on_remove=self.users_store.delete_notification,
@@ -54,7 +54,7 @@ class UsersRepository(Repository):
             check_every_seconds=check_every_seconds, check_times=check_times, is_active=is_active,
             channel_type=channel_type, fields_to_send=fields_to_send, source_id=source_id,
             operation=OPERATIONS.ADDED.name)
-        self.notifications.append(n)
+        self.memories[USER_NOTIFICATIONS_MEMORY_KEY].items.append(n)
         return n
 
     def edit_notification(self, in_id, user_id, user_name, user_email, expression_to_evaluate, check_every_seconds,
@@ -65,8 +65,7 @@ class UsersRepository(Repository):
             check_every_seconds=check_every_seconds, check_times=check_times, is_active=is_active,
             channel_type=channel_type, fields_to_send=fields_to_send, source_id=source_id,
             operation=OPERATIONS.MODIFIED.name)
-
-        self.notifications.append(n)
+        self.memories[USER_NOTIFICATIONS_MEMORY_KEY].items.append(n)
         return n
 
     def add_user_settings(self, user_id, preferred_currency, source_id):
@@ -80,7 +79,7 @@ class UsersRepository(Repository):
                            preferred_currency=preferred_currency, source_id=source_id,
 
                            operation=OPERATIONS.MODIFIED.name)
-        self.user_settings.append(uc)
+        self.memories[USER_SETTINGS_MEMORY_KEY].items.append(uc)
         return uc
 
     def add_user_channel(self, user_id, channel_type, chat_id, source_id):
@@ -90,10 +89,7 @@ class UsersRepository(Repository):
             chat_id=chat_id,
             operation=OPERATIONS.ADDED.name,
             source_id=source_id)
-
-        self.user_channels.append(
-            uc
-        )
+        self.memories[USER_CHANNELS_MEMORY_KEY].items.append(uc)
         return uc
 
     def remove_notification(self, in_id):

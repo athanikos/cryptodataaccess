@@ -191,3 +191,25 @@ def test_delete_user_notification_when_exists_by_source_id():
     assert (len(user_notification.objects) == 1)
     store.do_delete_user_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
     assert (len(user_notification.objects) == 0)
+
+
+def test_delete_user_notification_when_exists_by_source_id():
+    config = configure_app()
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
+
+    helpers.do_connect(config)
+
+    user_notification.objects.all().delete()
+
+    repo.add_notification(user_id=1, user_name='username', user_email='email',
+                          expression_to_evaluate='some expr', check_every_seconds=1, check_times=1,
+                          is_active=True, channel_type='telegram',
+                          fields_to_send="dsd",
+                          source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.commit()
+    ut = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
+    assert (len(user_notification.objects) == 1)
+    store.do_delete_user_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
+    assert (len(user_notification.objects) == 0)
+
