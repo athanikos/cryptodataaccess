@@ -56,8 +56,8 @@ config = {
 
 
 def configure_app():
-    config_name = os.getenv('FLASK_ENV', 'default')
+    config_name = os.getenv('FLASK_ENV', "cryptodataaccess.config.DevelopmentConfig")
     cfg = import_string(config_name)()
-    cfg.USERNAME = get_password('CryptoCalculatorService', 'USERNAME')
-    cfg.PASSWORD = get_password('CryptoCalculatorService', cfg.USERNAME)
+    cfg.USERNAME = get_password('cryptodataaccess', 'USERNAME')
+    cfg.PASSWORD = get_password('cryptodataaccess', cfg.USERNAME)
     return cfg
