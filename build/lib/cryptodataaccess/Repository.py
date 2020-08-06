@@ -28,11 +28,16 @@ class Repository:
     def mark_deleted(self, memory_key, on_select, id_value, id_name):
         item = next((x for x in self.memories[memory_key].items if getattr(x, id_name) == id_value), None)
         if item is None:
-            trans = on_select(id_value)
+            try:
+                trans = on_select(id_value)[:1]
+            except:
+                trans = None  # log ?
+
             if trans is None:
                 exit
             else:
                 trans.operation = OPERATIONS.REMOVED.name
-                self.memories[memory_key] = item
+                self.memories[memory_key].items.append(trans)
+
         else:
             item.operation = OPERATIONS.REMOVED.name
