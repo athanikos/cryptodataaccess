@@ -213,3 +213,11 @@ def test_delete_user_notification_when_exists_by_source_id():
     store.do_delete_user_notification_by_source_id(source_id=ObjectId('666f6f2d6261722d71757578'))
     assert (len(user_notification.objects) == 0)
 
+
+def test_Users_Repository_create():
+    config = configure_app()
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
+
+    assert (repo.memories[USER_NOTIFICATIONS_MEMORY_KEY] is not None)
+    assert (repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items is not None)

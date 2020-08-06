@@ -11,12 +11,9 @@ DATE_FORMAT = "%Y-%m-%d"
 class UsersRepository(Repository):
 
     def __init__(self, users_store):
-        self.users_store = users_store
         super(UsersRepository, self).__init__()
-
+        self.users_store = users_store
         self.notifications = []
-
-
         notification_memory = Memory(on_add=self.users_store.insert_notification,
                                      on_edit=self.users_store.update_notification,
                                      on_remove=self.users_store.delete_notification,
