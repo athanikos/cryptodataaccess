@@ -43,10 +43,8 @@ class Repository:
     def mark_deleted(self, memory_key, on_select, id_value, id_name):
         item = next((x for x in self.memories[memory_key].items if getattr(x, id_name) == id_value), None)
         if item is None:
-            if len(on_select(id_value)) == 0:
-                return
             try:
-                trans = on_select(id_value)[:1]
+                trans = on_select(id_value)[0]
             except:
                 trans = None  # log ?
             if trans is None:

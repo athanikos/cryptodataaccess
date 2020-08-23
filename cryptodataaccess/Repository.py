@@ -44,7 +44,9 @@ class Repository:
         item = next((x for x in self.memories[memory_key].items if getattr(x, id_name) == id_value), None)
         if item is None:
             try:
-                trans = on_select(id_value)[0]
+                if len(on_select(id_value)) == 0:
+                    return
+                trans = on_select(id_value)[:1]
             except:
                 trans = None  # log ?
             if trans is None:
@@ -54,4 +56,6 @@ class Repository:
                 self.memories[memory_key].items.append(trans)
         else:
             item.operation = OPERATIONS.REMOVED.name
-            setattr(item, MEMORY_HANDLED_ATTRIBUTE_NAME, False) # add, commit, remove sequence should set back to handled = false to allow deletion
+            setattr(item, MEMORY_HANDLED_ATTRIBUTE_NAME,
+                    False)  # add, commit, remove sequence should set back to handled = false to allow deletion
+

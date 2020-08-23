@@ -14,8 +14,8 @@ class TransactionMongoStore(TransactionStore):
     def fetch_distinct_user_ids(self):
         return helpers.server_time_out_wrapper(self, self.do_fetch_transaction, id)
 
-    def fetch_transaction(self, id):
-        return helpers.server_time_out_wrapper(self, self.do_fetch_transaction, id)
+    def fetch_transaction(self, _id):
+        return helpers.server_time_out_wrapper(self, self.do_fetch_transaction, _id)
 
     def fetch_transactions(self, user_id):
         return helpers.server_time_out_wrapper(self, self.do_fetch_transactions, user_id)

@@ -1,4 +1,5 @@
-from cryptomodel.cryptostore import user_transaction, OPERATIONS
+from cryptomodel.cryptostore import user_transaction
+from cryptomodel.operations import OPERATIONS
 
 from cryptodataaccess.Memory import Memory, TRANSACTIONS_MEMORY_KEY
 from cryptodataaccess.Repository import Repository
