@@ -117,8 +117,18 @@ def test_update_notification_when_does_not_exist_throws_ValueError():
 
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
-        repo.edit_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik2', 'email', 'some expr', 1, 1, True,
-                               'telegram', 'expr to send', ObjectId('666f6f2d6261722d71757578'))
+        repo.edit_notification(
+            in_id=ObjectId('666f6f2d6261722d71757578'),
+            channel_type="TELEGRAM",
+            notification_type="BALANCE",
+            user_id=1,
+            user_name="test",
+            user_email="ds",
+            is_active=False,
+            source_id=ObjectId('666f6f2d6261722d71757578'),
+            check_every_seconds
+
+        )
         repo.commit()
 
 
