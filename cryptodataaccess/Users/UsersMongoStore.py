@@ -65,12 +65,12 @@ class UsersMongoStore(UsersStore, ABC):
         un.user_id = notification.user_id
         un.user_name = notification.user_name
         un.user_email = notification.user_email
-        un.expression_to_evaluate = notification.expression_to_evaluate
+        un.notification_type = notification.notification_type
         un.check_every_seconds = notification.check_every_seconds
         un.check_times = notification.check_times
         un.is_active = notification.is_active
         un.channel_type = notification.channel_type
-        un.fields_to_send = notification.fields_to_send
+        un.threshold_value = notification.threshold_value
         un.source_id = notification.source_id
         un.operation = notification.operation
         un.save()
@@ -113,12 +113,12 @@ class UsersMongoStore(UsersStore, ABC):
         un.user_id = notification.user_id
         un.user_name = notification.user_name
         un.user_email = notification.user_email
-        un.expression_to_evaluate = notification.expression_to_evaluate
+        un.notification_type = notification.notification_type
         un.check_every_seconds = notification.check_every_seconds
         un.check_times = notification.check_times
         un.is_active = notification.is_active
         un.channel_type = notification.channel_type
-        un.fields_to_send = notification.fields_to_send
+        un.threshold_value = notification.threshold_value
         un.source_id = notification.source_id
         un.operation = notification.operation
         un.save()
