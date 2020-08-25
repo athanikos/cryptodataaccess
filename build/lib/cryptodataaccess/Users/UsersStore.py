@@ -8,7 +8,7 @@ class UsersStore(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def fetch_notifications(self, items_count):
+    def fetch_notifications(self):
         pass
 
     @abstractmethod

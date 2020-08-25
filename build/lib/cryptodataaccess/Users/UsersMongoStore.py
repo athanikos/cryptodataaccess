@@ -66,8 +66,9 @@ class UsersMongoStore(UsersStore, ABC):
         un.user_name = notification.user_name
         un.user_email = notification.user_email
         un.notification_type = notification.notification_type
-        un.check_every_seconds = notification.check_every_seconds
-        un.check_times = notification.check_times
+        un.check_every =notification.check_every
+        un.start_date = notification.start_date
+        un.end_date = notification.end_date
         un.is_active = notification.is_active
         un.channel_type = notification.channel_type
         un.threshold_value = notification.threshold_value
@@ -114,8 +115,11 @@ class UsersMongoStore(UsersStore, ABC):
         un.user_name = notification.user_name
         un.user_email = notification.user_email
         un.notification_type = notification.notification_type
-        un.check_every_seconds = notification.check_every_seconds
-        un.check_times = notification.check_times
+
+        un.check_every = notification.check_every
+        un.start_date = notification.start_date
+        un.end_date = notification.end_date
+
         un.is_active = notification.is_active
         un.channel_type = notification.channel_type
         un.threshold_value = notification.threshold_value

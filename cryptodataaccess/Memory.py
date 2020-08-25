@@ -6,7 +6,7 @@ TRANSACTIONS_MEMORY_KEY = "transactions"
 USER_NOTIFICATIONS_MEMORY_KEY = "notifications"
 USER_CHANNELS_MEMORY_KEY = "channels"
 USER_SETTINGS_MEMORY_KEY = "settings"
-
+CALCULATOR_MEMORY_KEY = "calculator"
 
 class Memory:
 

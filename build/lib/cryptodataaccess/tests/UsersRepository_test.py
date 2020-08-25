@@ -117,8 +117,21 @@ def test_update_notification_when_does_not_exist_throws_ValueError():
 
     user_notification.objects.all().delete()
     with pytest.raises(ValueError):
-        repo.edit_notification(ObjectId('666f6f2d6261722d71757578'), 1, 'nik2', 'email', 'some expr', 1, 1, True,
-                               'telegram', 'expr to send', ObjectId('666f6f2d6261722d71757578'))
+        repo.edit_notification(
+            in_id=ObjectId('666f6f2d6261722d71757578'),
+            channel_type="TELEGRAM",
+            notification_type="BALANCE",
+            user_id=1,
+            user_name="test",
+            user_email="ds",
+            is_active=False,
+            source_id=ObjectId('666f6f2d6261722d71757578'),
+            check_every="00:00",
+            start_date=datetime.now(),
+            end_date= datetime.now(),
+            threshold_value=1
+
+        )
         repo.commit()
 
 
@@ -131,16 +144,21 @@ def test_update_notification():
 
     user_notification.objects.all().delete()
     repo.add_notification(user_id=1, user_name='username', user_email='email',
-                          notification_type='BALANCE', check_every_seconds=1, check_times=1,
+                          notification_type='BALANCE',
                           is_active=True, channel_type='TELEGRAM',
                           threshold_value=1,
+                          check_every="00:00",
+                          start_date=datetime.now(),
+                          end_date=datetime.now(),
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
 
     repo.edit_notification(in_id=un.id,
                            user_id=1, user_name='username2', user_email='email',
-                           notification_type='BALANCE', check_every_seconds=1, check_times=1,
+                           notification_type='BALANCE',     check_every="00:00",
+                           start_date=datetime.now(),
+                           end_date=datetime.now(),
                            is_active=True, channel_type='TELEGRAM',
                            threshold_value=1,
                            source_id=ObjectId('666f6f2d6261722d71757578'))
@@ -162,7 +180,10 @@ def test_delete_notification_when_exists():
     repo.add_notification(user_id=1, user_name='username', user_email='email',
                           threshold_value=1,
                           notification_type = "BALANCE",
-                          check_every_seconds=1, check_times=1,
+                          check_every="00:00",
+                          start_date=datetime.now(),
+                          end_date=datetime.now(),
+
                           is_active=True, channel_type='TELEGRAM', source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     ut = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
@@ -204,9 +225,12 @@ def test_delete_user_notification_when_exists_by_source_id():
     user_notification.objects.all().delete()
 
     repo.add_notification(user_id=1, user_name='username', user_email='email',
-                          notification_type='BALANCE', check_every_seconds=1, check_times=1,
+                          notification_type='BALANCE',
                           is_active=True, channel_type='TELEGRAM',
                           threshold_value=1,
+                          check_every="00:00",
+                          start_date=datetime.now(),
+                          end_date=datetime.now(),
                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     ut = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]

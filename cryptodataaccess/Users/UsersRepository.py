@@ -43,8 +43,8 @@ class UsersRepository(Repository):
     def get_user_settings(self, user_id):
         return self.users_store.fetch_user_settings(user_id)
 
-    def get_notifications(self, items_count):
-        return self.users_store.fetch_notifications(items_count)
+    def get_notifications(self):
+        return self.users_store.fetch_notifications()
 
     def add_notification(self, user_id, user_name, user_email, notification_type, check_every,is_active,
                          start_date, end_date, channel_type, threshold_value, source_id):
