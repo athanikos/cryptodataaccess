@@ -53,3 +53,23 @@ def test_insert_computed_notification():
     assert (cn.user_id == 1)
     assert (len(computed_notification.objects) == 1)
     assert (cn.operation == OPERATIONS.ADDED.name)
+    assert (cn.sent == False)
+
+    ut = repo.add_computed_notification(user_id=1,user_name="ds",user_email="ds",
+                                        notification_type="BALANCE",check_every="00:01",
+                                        is_active=True,
+                                        computed_date="2020-01-01",
+                                        end_date="2020-01-01",
+                                        start_date="2020-01-01",
+                                        threshold_value=1,channel_type="TELEGRAM",
+                                        result="sss",
+                                        source_id=ObjectId('666f6f2d6261722d71757578'),
+                                        sent=True
+
+                                        )
+    repo.commit()
+    cn = repo.memories[CALCULATOR_MEMORY_KEY].items[0]
+    assert (cn.user_id == 1)
+    assert (len(computed_notification.objects) == 2)
+    assert (cn.operation == OPERATIONS.ADDED.name)
+    assert (cn.sent == True)

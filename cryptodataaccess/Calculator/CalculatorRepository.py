@@ -21,8 +21,8 @@ class CalculatorRepository(Repository):
         self.memories[CALCULATOR_MEMORY_KEY] = memory
 
     def add_computed_notification(self, user_id, user_name, user_email, notification_type, check_every, is_active,
-                         start_date, end_date, channel_type, threshold_value, source_id, computed_date, result):
-
+                                  start_date, end_date, channel_type, threshold_value, source_id, computed_date, result,
+                                  sent=False):
         n = computed_notification(
             user_id=user_id, user_name=user_name, user_email=user_email,
             notification_type=notification_type,
@@ -31,7 +31,23 @@ class CalculatorRepository(Repository):
             end_date=end_date,
             is_active=is_active,
             channel_type=channel_type, threshold_value=threshold_value, source_id=source_id,
-            operation=OPERATIONS.ADDED.name, computed_date= computed_date, result=result)
+            operation=OPERATIONS.ADDED.name, computed_date=computed_date, result=result, sent=sent)
+
+        self.memories[CALCULATOR_MEMORY_KEY].items.append(n)
+        return n
+
+    def edit_computed_notification(self, user_id, user_name, user_email, notification_type, check_every, is_active,
+                                  start_date, end_date, channel_type, threshold_value, source_id, computed_date, result,
+                                  sent=False):
+        n = computed_notification(
+            user_id=user_id, user_name=user_name, user_email=user_email,
+            notification_type=notification_type,
+            check_every=check_every,
+            start_date=start_date,
+            end_date=end_date,
+            is_active=is_active,
+            channel_type=channel_type, threshold_value=threshold_value, source_id=source_id,
+            operation=OPERATIONS.MODIFIED.name, computed_date=computed_date, result=result, sent=sent)
 
         self.memories[CALCULATOR_MEMORY_KEY].items.append(n)
         return n

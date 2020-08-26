@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class CalculatorStore(metaclass=ABCMeta):
+
     @abstractmethod
     def insert_computed_notification(self):
         pass
