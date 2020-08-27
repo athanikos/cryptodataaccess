@@ -61,14 +61,14 @@ class UsersRepository(Repository):
         return n
 
     def edit_notification(self, in_id, user_id, user_name, user_email, notification_type, check_every,
-                          start_date,end_date, is_active, channel_type, threshold_value, source_id, computed = False):
+                          start_date,end_date, is_active, channel_type, threshold_value, source_id):
         n = user_notification(
             id=in_id,
             user_id=user_id, user_name=user_name,
             user_email=user_email, notification_type=notification_type,
             check_every=check_every, start_date=start_date, end_date=end_date, is_active=is_active,
             channel_type=channel_type, threshold_value=threshold_value, source_id=source_id,
-            operation=OPERATIONS.MODIFIED.name, computed=computed)
+            operation=OPERATIONS.MODIFIED.name)
         self.memories[USER_NOTIFICATIONS_MEMORY_KEY].items.append(n)
         return n
 

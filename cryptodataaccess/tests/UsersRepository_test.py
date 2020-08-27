@@ -166,7 +166,6 @@ def test_update_notification():
     un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
 
     assert (un.user_name == "username2")
-    assert (un.computed == False)
     repo.edit_notification(in_id=un.id,
                            user_id=1, user_name='username2', user_email='email',
                            notification_type='BALANCE',     check_every="00:00",
@@ -174,11 +173,11 @@ def test_update_notification():
                            end_date=datetime.now(),
                            is_active=True, channel_type='TELEGRAM',
                            threshold_value=1,
-                           source_id=ObjectId('666f6f2d6261722d71757578'), computed=True)
+                           source_id=ObjectId('666f6f2d6261722d71757578'))
     repo.commit()
     un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
 
-    assert (un.computed == True)
+
 
 
 def test_delete_notification_when_exists():
