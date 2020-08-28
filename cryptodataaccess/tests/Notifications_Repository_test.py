@@ -2,7 +2,7 @@ from datetime import datetime
 
 import mock
 from bson import ObjectId
-from cryptomodel.sent_notification import sent_notification
+
 from cryptomodel.operations import OPERATIONS
 from cryptodataaccess.Memory import NOTIFICATIONS_MEMORY_KEY
 from cryptodataaccess.config import configure_app
@@ -10,7 +10,7 @@ from cryptodataaccess.Notifications.NotificationsRepository import Notifications
 from cryptodataaccess.Notifications.NotificationsMongoStore import NotificationsMongoStore
 import pytest
 from cryptodataaccess.helpers import do_connect
-
+from cryptomodel.sent_notification import sent_notification
 
 @pytest.fixture(scope='module')
 def mock_log():
@@ -27,13 +27,14 @@ def test_insert_sent_notification():
     do_connect(config)
     sent_notification.objects.all().delete()
     ut = repo.add_sent_notification(user_name="as",user_email="sa",user_id=1,threshold_value=1,notification_type="BALANCE",
-                                    check_every=2,channel_type="TELEGRAM",is_active="False",
+                                    check_every="00:00",channel_type="TELEGRAM",is_active="False",
                                     start_date=datetime.now(),end_date=datetime.now(),
-                              source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
+                                    source_id=ObjectId('666f6f2d6261722d71757578'), result="ds", computed_date=datetime.now)
+
+
+
     repo.commit()
 
     ut = repo.memories[NOTIFICATIONS_MEMORY_KEY].items[0]
     assert (ut.user_id == 1)
-    assert (ut.symbol == "OXT")
-    assert (len(sent_notification.objects) == 1)
     assert (ut.operation == OPERATIONS.ADDED.name)
