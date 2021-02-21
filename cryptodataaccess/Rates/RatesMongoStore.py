@@ -4,7 +4,6 @@ from cryptomodel.fixer import exchange_rates, Q
 from cryptomodel.readonly import SymbolRates
 from cryptodataaccess.Rates.RatesStore import RatesStore
 from cryptodataaccess.helpers import server_time_out_wrapper, do_connect, convert_to_int_timestamp
-
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 
@@ -26,7 +25,6 @@ class RatesMongoStore(RatesStore):
         return self.fetch_symbol_rates_for_date(dt_now)
 
     def fetch_symbol_rates_for_date(self, dt):
-
         srs = SymbolRates(dt)
         latest_prices = self.fetch_latest_prices_to_date(dt)
         for coin in latest_prices[0].coins:

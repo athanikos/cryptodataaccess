@@ -178,8 +178,6 @@ def test_update_notification():
     un = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
 
 
-
-
 def test_delete_notification_when_exists():
     config = configure_app()
     store = UsersMongoStore(config, mock_log)
@@ -204,6 +202,34 @@ def test_delete_notification_when_exists():
     ut = repo.remove_notification(ut.id)
     repo.commit()
     assert (len(user_notification.objects) == 0)
+
+
+
+
+def test_fetch_notification_when_exists():
+    config = configure_app()
+    store = UsersMongoStore(config, mock_log)
+    repo = UsersRepository(store)
+    helpers.do_connect(config)
+
+    user_notification.objects.all().delete()
+
+    repo.add_notification(user_id=1, user_name='username', user_email='email',
+                          threshold_value=1,
+                          notification_type = "BALANCE",
+                          check_every="00:00",
+                          start_date=datetime.now(),
+                          end_date=datetime.now(),
+
+                          is_active=True, channel_type='TELEGRAM', source_id=ObjectId('666f6f2d6261722d71757578'))
+    repo.commit()
+
+    ut = repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items[0]
+
+    ut = repo.get_notification(ut.id)[0]
+
+    assert (ut.notification_type == "BALANCE")
+    assert (ut.user_name == "username")
 
 
 def test_delete_user_notification_when_exists_by_source_id():
@@ -280,6 +306,7 @@ def test_remove_notification_by_source_id_should_not_add_any_object_to_memory_wh
 
     store.do_delete_user_notification_by_source_id(source_id= ObjectId('666f6f2d6261722d71757578'), throw_if_does_not_exist=False)
     assert (len(repo.memories[USER_NOTIFICATIONS_MEMORY_KEY].items)==0)
+
 
 def test_delete_notification_by_source_id_should_not_add_any_object_to_memory_when_does_not_exist_in_db_and_mem():
     config = configure_app()

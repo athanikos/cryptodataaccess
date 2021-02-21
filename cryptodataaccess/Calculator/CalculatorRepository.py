@@ -53,3 +53,4 @@ class CalculatorRepository(Repository):
 
     def get_computed_notification_before_date(self, user_id, date):
         return self.calculator_store.fetch_computed_notifications_before_date(user_id, date)
+

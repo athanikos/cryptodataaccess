@@ -25,6 +25,7 @@ class UsersStore(metaclass=ABCMeta):
                             check_times, is_active, channel_type, fields_to_send, source_id, operation):
         pass
 
+
     @abstractmethod
     def fetch_user_settings_by_id(self, id):
         pass

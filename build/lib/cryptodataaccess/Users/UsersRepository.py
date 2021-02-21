@@ -43,27 +43,33 @@ class UsersRepository(Repository):
     def get_user_settings(self, user_id):
         return self.users_store.fetch_user_settings(user_id)
 
+    def get_notification(self, notification_id):
+        return self.users_store.fetch_notification_by_id(notification_id)
+
     def get_notifications(self):
         return self.users_store.fetch_notifications()
 
     def add_notification(self, user_id, user_name, user_email, notification_type, check_every,is_active,
                          start_date, end_date, channel_type, threshold_value, source_id):
         n = user_notification(
-            user_id=user_id, user_name=user_name, user_email=user_email,
+            user_id=user_id,
+            user_name=user_name,
+            user_email=user_email,
             notification_type=notification_type,
             check_every=check_every,
             start_date=start_date,
             end_date=end_date,
             is_active=is_active,
-            channel_type=channel_type, threshold_value=threshold_value, source_id=source_id,
+            channel_type=channel_type,
+            threshold_value=threshold_value,
+            source_id=source_id,
             operation=OPERATIONS.ADDED.name)
         self.memories[USER_NOTIFICATIONS_MEMORY_KEY].items.append(n)
         return n
 
     def edit_notification(self, in_id, user_id, user_name, user_email, notification_type, check_every,
                           start_date,end_date, is_active, channel_type, threshold_value, source_id):
-        n = user_notification(
-            id=in_id,
+        n = user_notification(id=in_id,
             user_id=user_id, user_name=user_name,
             user_email=user_email, notification_type=notification_type,
             check_every=check_every, start_date=start_date, end_date=end_date, is_active=is_active,
@@ -73,15 +79,15 @@ class UsersRepository(Repository):
         return n
 
     def add_user_settings(self, user_id, preferred_currency, source_id):
-        uc = user_settings(user_id=user_id, preferred_currency=preferred_currency, source_id=source_id,
-                           operation=OPERATIONS.ADDED.name)
-        self.user_settings.append(uc)
+        uc = user_settings(user_id=user_id, preferred_currency=preferred_currency,
+                           source_id=source_id, operation=OPERATIONS.ADDED.name)
+        self.memories[USER_SETTINGS_MEMORY_KEY].items.append(uc)
         return uc
 
     def edit_user_settings(self, user_id, preferred_currency, source_id):
         uc = user_settings(user_id=user_id,
-                           preferred_currency=preferred_currency, source_id=source_id,
-
+                           preferred_currency=preferred_currency,
+                           source_id=source_id,
                            operation=OPERATIONS.MODIFIED.name)
         self.memories[USER_SETTINGS_MEMORY_KEY].items.append(uc)
         return uc

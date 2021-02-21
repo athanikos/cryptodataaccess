@@ -10,15 +10,21 @@ Repositories for cryptomodel
 2. TransactionRepository (buy,sell,deposit) 
 3. RatesRepository (exchange rates & symbol rates )
 
-
-
-
-##### unit testing setup 
-> import keyring
-> keyring.set_password("cryptodataaccess","USERNAME","cryptoAdmin")
-> keyring.set_password("cryptodataaccess","USERNAME","test")
-> keyring.set_password("cryptodataaccess","test","test")
-
-#####
-start mongo 
-> sudo service mongod start 
+##### unit testing setup , set up keyring user name and pass for mongo db 
+>>> import keyring 
+>>> keyring.set_keyring(PlaintextKeyring())   
+>>> from keyrings.alt.file import PlaintextKeyring    
+>>> keyring.set_keyring(PlaintextKeyring())   
+>>> keyring.set_password('CryptoUsersService', 'USERNAME', 'someusername') 
+>>> keyring.set_password('cryptodataaccess', 'USERNAME', 'username') 
+>>> keyring.set_password('cryptodataaccess', 'admin', 'password')
+> 
+> 
+> 
+##### to package 
+https://packaging.python.org/tutorials/packaging-projects/
+rm -rf dist 
+python3 -m build
+python3 -m pip install --user --upgrade twine
+modify version in setup.py  (increment by 1 )
+python3 -m twine upload --skip-existing --repository pypi dist/*

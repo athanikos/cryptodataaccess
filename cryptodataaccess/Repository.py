@@ -2,6 +2,7 @@ from cryptomodel.operations import OPERATIONS
 
 MEMORY_HANDLED_ATTRIBUTE_NAME = "memory_handled"
 
+
 class Repository:
 
     def __init__(self):
