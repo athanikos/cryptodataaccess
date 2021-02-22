@@ -21,3 +21,7 @@ class RatesStore(metaclass=ABCMeta):
     @abstractmethod
     def fetch_latest_exchange_rates_to_date(self, before_date):
         pass
+
+    @abstractmethod
+    def insert_symbols(self):
+        pass

@@ -2,6 +2,7 @@ from datetime import datetime
 from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates, Q
 from cryptomodel.readonly import SymbolRates
+from cryptomodel.coinmarket import prices
 from cryptodataaccess.Rates.RatesStore import RatesStore
 from cryptodataaccess.helpers import server_time_out_wrapper, do_local_connect, convert_to_int_timestamp
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
@@ -46,3 +47,16 @@ class RatesMongoStore(RatesStore):
         do_local_connect(self.configuration)
         return exchange_rates.objects(Q(date__lte=before_date)).order_by(
             'date-')[:1]
+
+    def insert_symbols(self, id, status, coins , source_id):
+        return server_time_out_wrapper(self, self.do_add_symbols, id, status, coins, source_id)
+
+    def do_insert_symbols(self, id, status, coins , source_id):
+        do_local_connect(self.configuration)
+        prcs = prices()
+        prcs.id = id
+        prcs.status = status
+        prcs.coins = coins
+        prcs.source_id = source_id
+        prcs.save()
+        return prcs.objects(id=prcs.id).first()
