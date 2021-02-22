@@ -39,7 +39,7 @@ class TransactionRepository:
         helpers.server_time_out_wrapper(self, self.do_delete_transaction, id, throw_if_does_not_exist)
 
     def do_delete_transaction(self, id, throw_if_does_not_exist=True):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction.objects(id=id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(id, trans)
@@ -50,7 +50,7 @@ class TransactionRepository:
         helpers.server_time_out_wrapper(self, self.do_delete_transaction, source_id, throw_if_does_not_exist)
 
     def do_delete_transaction_by_source_id(self, source_id, throw_if_does_not_exist=True):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction.objects(source_id=source_id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(id, trans)
@@ -59,7 +59,7 @@ class TransactionRepository:
 
     def do_update_transaction(self, id, user_id, volume, symbol, value, price, currency, date, source, source_id,
                               operation):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction.objects(id=id).first()
         if_none_raise_with_id(id, trans)
         trans.user_id = user_id
@@ -77,7 +77,7 @@ class TransactionRepository:
 
     def do_insert_transaction(self, user_id, volume, symbol, value, price, currency, date, source, source_id,
                               operation):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction()
         trans.user_id = user_id
         trans.volume = volume
@@ -93,13 +93,13 @@ class TransactionRepository:
         return user_transaction.objects(id=trans.id).first()
 
     def do_fetch_transactions(self, user_id ):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         return user_transaction.objects(Q(user_id=user_id))
 
     def do_fetch_transaction(self,id):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         return user_transaction.objects(Q(id=id))[0]
 
     def do_fetch_distinct_user_ids(self):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         return user_transaction.objects().only('user_id').distinct('user_id')

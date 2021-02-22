@@ -8,7 +8,7 @@ from cryptodataaccess.Rates.RatesMongoStore import RatesMongoStore
 from cryptodataaccess.Rates.RatesRepository import RatesRepository
 from cryptodataaccess.config import configure_app
 import pytest
-from cryptodataaccess.helpers import do_connect, convert_to_int_timestamp
+from cryptodataaccess.helpers import do_local_connect, convert_to_int_timestamp
 from cryptodataaccess.tests.helpers import insert_prices_record, insert_exchange_record, insert_prices_record_with_method, \
     get_prices20200812039_record, get_prices20200801T2139_record
 
@@ -25,7 +25,7 @@ def mock_log():
 
 def test_fetch_symbol_rates_for_date_pass_str_or_dt():
     config = configure_app()
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     exchange_rates.objects.all().delete()
     prices.objects.all().delete()
@@ -36,7 +36,7 @@ def test_fetch_symbol_rates_for_date_pass_str_or_dt():
     config = configure_app()
     store = RatesMongoStore(config, mock_log)
     rates_repo = RatesRepository(store)
-    do_connect(config)
+    do_local_connect(config)
 
     rates_repo.fetch_symbol_rates_for_date(convert_to_int_timestamp(datetime.today()))
 
@@ -50,7 +50,7 @@ def test_fetch_symbol_rates_for_dat_with_two_entries_within_two_hours():
     config = configure_app()
     users_store = RatesMongoStore(config, mock_log)
     rates_repo = RatesRepository(users_store)
-    do_connect(config)
+    do_local_connect(config)
     dt_now = convert_to_int_timestamp(datetime.today())
     user_transaction.objects.all().delete()
     prices.objects.all().delete()

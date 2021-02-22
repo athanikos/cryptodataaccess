@@ -39,7 +39,7 @@ class TransactionMongoStore(TransactionStore):
         helpers.server_time_out_wrapper(self, self.do_delete_transaction, in_trans, throw_if_not_exist)
 
     def do_delete_transaction(self, in_trans, throw_if_does_not_exist=True):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction.objects(id=in_trans.id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(in_trans.id, trans)
@@ -50,7 +50,7 @@ class TransactionMongoStore(TransactionStore):
         helpers.server_time_out_wrapper(self, self.do_delete_transaction, source_id, throw_if_does_not_exist)
 
     def do_delete_transaction_by_source_id(self, source_id, throw_if_does_not_exist=True):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction.objects(source_id=source_id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(id, trans)
@@ -58,7 +58,7 @@ class TransactionMongoStore(TransactionStore):
             trans.delete()
 
     def do_update_transaction(self, in_trans):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction.objects(id=in_trans.id).first()
         if_none_raise_with_id(in_trans.id, trans)
         trans.user_id = in_trans.user_id
@@ -77,7 +77,7 @@ class TransactionMongoStore(TransactionStore):
         return user_transaction.objects(id=trans.id).first()
 
     def do_insert_transaction(self, in_trans):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction()
         trans.user_id = in_trans.user_id
         trans.volume = in_trans.volume
@@ -97,22 +97,22 @@ class TransactionMongoStore(TransactionStore):
         return user_transaction.objects(id=trans.id).first()
 
     def do_fetch_transactions(self, user_id):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         return user_transaction.objects(Q(user_id=user_id))
 
     def do_fetch_transactions_before_date(self, user_id, date):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         return user_transaction.objects(Q(user_id=user_id) &
                                         Q(date__lte=date)
                                         )
 
     def do_fetch_transaction(self, id):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         trans = user_transaction.objects(Q(id=id))
         if len(trans) == 1:
             return user_transaction.objects(Q(id=id))[0]
         return None
 
     def do_fetch_distinct_user_ids(self):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         return user_transaction.objects().only('user_id').distinct('user_id')

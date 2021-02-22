@@ -2,7 +2,7 @@ import mock
 from cryptomodel.coinmarket import  prices
 from cryptodataaccess.config import configure_app
 import pytest
-from cryptodataaccess.helpers import do_connect
+from cryptodataaccess.helpers import do_local_connect
 
 
 @pytest.fixture(scope='module')
@@ -15,7 +15,7 @@ def mock_log():
 
 def test_eval_collection():
     config = configure_app()
-    do_connect(config)
+    do_local_connect(config)
     actual_count = prices.objects()
     j = "prices"
     assert(len(eval(j).objects()) == len(actual_count))

@@ -10,7 +10,7 @@ from cryptodataaccess.Transactions.TransactionMongoStore import TransactionMongo
 from cryptodataaccess.config import configure_app
 from cryptodataaccess.Transactions.TransactionRepository import TransactionRepository
 import pytest
-from cryptodataaccess.helpers import do_connect
+from cryptodataaccess.helpers import do_local_connect
 from mongoengine import Q
 
 
@@ -26,7 +26,7 @@ def test_insert_transaction():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                               source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
@@ -42,7 +42,7 @@ def test_update_transaction():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                          source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
@@ -68,7 +68,7 @@ def test_update_transaction_when_does_not_exist_throws_ValueError():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     with pytest.raises(ValueError):
         repo.edit_transaction(ObjectId('666f6f2d6261722d71757578'), 1, 1, 'OXT', "EUR", 1, 1, "2020-01-01",
@@ -79,7 +79,7 @@ def test_delete_transaction_when_does_not_exist_throws_ValueError():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     trans = user_transaction()
     trans.id = ObjectId('666f6f2d6261722d71757578')
@@ -91,7 +91,7 @@ def test_delete_transaction_when_does_not_exist_and_throw_is_false_does_not_thro
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     trans = user_transaction()
     trans.id = ObjectId('666f6f2d6261722d71757578')
@@ -102,7 +102,7 @@ def test_delete_transaction_when_exists():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",
                          source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
     repo.commit()
@@ -120,7 +120,7 @@ def test_delete_transaction_when_exists_by_source_id():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
 
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",
@@ -137,7 +137,7 @@ def test_fetch_transaction():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     ut = repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                               source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
@@ -161,7 +161,7 @@ def test_fetch_distinct_user_ids():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                          source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
@@ -196,7 +196,7 @@ def test_get_transaction_by_date():
     config = configure_app()
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
 
     repo.add_transaction(1, 1, 'OXT', 1, 1, "EUR", "2020-01-01", "kraken",

@@ -6,7 +6,7 @@ from cryptomodel.cryptostore import user_notification, user_channel, user_transa
 from cryptomodel.cryptostore import user_settings
 from cryptodataaccess.helpers import server_time_out_wrapper, if_none_raise, if_none_raise_with_id
 from cryptodataaccess.Users.UsersStore import UsersStore
-from cryptodataaccess.helpers import do_connect
+from cryptodataaccess.helpers import do_local_connect
 
 DATE_FORMAT = "%Y-%m-%d"
 
@@ -60,7 +60,7 @@ class UsersMongoStore(UsersStore, ABC):
         server_time_out_wrapper(self, self.do_delete_user_settings, us)
 
     def do_insert_notification(self, notification):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         un = user_notification()
         un.user_id = notification.user_id
         un.user_name = notification.user_name
@@ -78,7 +78,7 @@ class UsersMongoStore(UsersStore, ABC):
         return user_notification.objects(id=un.id).first()
 
     def do_insert_user_channel(self, in_uc):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         uc = user_channel()
         uc.user_id = in_uc.user_id
         uc.channel_type = in_uc.channel_type
@@ -89,7 +89,7 @@ class UsersMongoStore(UsersStore, ABC):
         return user_channel.objects(id=uc.id).first()
 
     def do_insert_user_settings(self, in_uc):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         us = user_settings()
         us.user_id = in_uc.user_id
         us.preferred_currency = in_uc.preferred_currency
@@ -99,7 +99,7 @@ class UsersMongoStore(UsersStore, ABC):
         return user_settings.objects(id=us.id).first()
 
     def do_update_user_settings(self, user_setting):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         us = user_setting.objects(id=user_setting.id).first()
         if_none_raise_with_id(user_setting.id, us)
         us.user_id = user_setting.user_id
@@ -108,7 +108,7 @@ class UsersMongoStore(UsersStore, ABC):
         return user_setting.objects(id=id).first()
 
     def do_update_notification(self, notification):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         un = user_notification.objects(id=notification.id).first()
         if_none_raise_with_id(notification.id, un)
         un.user_id = notification.user_id
@@ -133,7 +133,7 @@ class UsersMongoStore(UsersStore, ABC):
                                 throw_if_does_not_exist)
 
     def do_delete_user_notification_by_source_id(self, source_id, throw_if_does_not_exist=True):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         un = user_notification.objects(source_id=source_id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(id, un)
@@ -141,7 +141,7 @@ class UsersMongoStore(UsersStore, ABC):
             un.delete()
 
     def do_delete_notification(self, notif, throw_if_does_not_exist=True):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         un = user_notification.objects(id=notif.id).first()
         if throw_if_does_not_exist:
             if_none_raise_with_id(id, un)
@@ -149,31 +149,31 @@ class UsersMongoStore(UsersStore, ABC):
             un.delete()
 
     def do_delete_user_settings(self, us):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         us = user_settings.objects(id=us.id).first()
         if_none_raise_with_id(us.id, us)
         us.delete()
 
     def do_fetch_user_channels(self, user_id):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         return user_notification.objects(Q(user_id=user_id))
 
     def do_fetch_user_settings(self, user_id):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         return user_settings.objects(Q(user_id=user_id))
 
     def do_fetch_notifications(self, items_count):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         return user_notification.objects()[:items_count]
 
     def do_fetch_user_channel_by_id(self, id):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         return user_channel.objects(Q(id=id))
 
     def do_fetch_user_settings_by_id(self, id):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         return user_settings.objects(Q(id=id))
 
     def do_fetch_notification_by_id(self, id):
-        do_connect(self.configuration)
+        do_local_connect(self.configuration)
         return user_notification.objects(Q(id=id))

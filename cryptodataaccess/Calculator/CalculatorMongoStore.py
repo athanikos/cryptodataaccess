@@ -18,7 +18,7 @@ class CalculatorMongoStore(CalculatorStore):
         return helpers.server_time_out_wrapper(self, self.do_insert_computed_notification, comp_not)
 
     def do_insert_computed_notification(self, _computed_notification):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         cn = computed_notification()
         cn.computed_date = _computed_notification.computed_date
         cn.result = _computed_notification.result
@@ -40,7 +40,7 @@ class CalculatorMongoStore(CalculatorStore):
         return computed_notification.objects(id=cn.id).first()
 
     def do_fetch_computed_notification_before_date(self, user_id, date):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         return computed_notification.objects(Q(user_id=user_id) &
                                              Q(computed_date__lte=date)
                                              )

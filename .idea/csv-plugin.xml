@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/cryptodataaccess/helpers.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/cryptodataaccess/tests/UsersRepository_test.py">
           <value>
             <Attribute>

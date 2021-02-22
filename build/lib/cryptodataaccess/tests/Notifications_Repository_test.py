@@ -9,7 +9,7 @@ from cryptodataaccess.config import configure_app
 from cryptodataaccess.Notifications.NotificationsRepository import NotificationsRepository
 from cryptodataaccess.Notifications.NotificationsMongoStore import NotificationsMongoStore
 import pytest
-from cryptodataaccess.helpers import do_connect
+from cryptodataaccess.helpers import do_local_connect
 from cryptomodel.sent_notification import sent_notification
 
 @pytest.fixture(scope='module')
@@ -24,7 +24,7 @@ def test_insert_sent_notification():
     config = configure_app()
     store = NotificationsMongoStore(config, mock_log)
     repo = NotificationsRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     sent_notification.objects.all().delete()
     ut = repo.add_sent_notification(user_name="as",user_email="sa",user_id=1,threshold_value=1,notification_type="BALANCE",
                                     check_every="00:00",channel_type="TELEGRAM",is_active="False",

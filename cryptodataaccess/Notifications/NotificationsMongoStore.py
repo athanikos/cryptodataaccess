@@ -19,7 +19,7 @@ class NotificationsMongoStore(NotificationsStore):
         return helpers.server_time_out_wrapper(self, self.do_insert_sent_notification, comp_not)
 
     def do_insert_sent_notification(self, _sent_notification):
-        helpers.do_connect(self.configuration)
+        helpers.do_local_connect(self.configuration)
         sn = sent_notification()
         sn.computed_date = _sent_notification.computed_date
         sn.result = _sent_notification.result

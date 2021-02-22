@@ -19,7 +19,7 @@ from cryptodataaccess.Users.UsersRepository import UsersRepository
 from cryptodataaccess.Rates.RatesRepository import RatesRepository
 import pytest
 
-from cryptodataaccess.helpers import do_connect
+from cryptodataaccess.helpers import do_local_connect
 
 
 @pytest.fixture(scope='module')
@@ -34,7 +34,7 @@ def test_insert_computed_notification():
     config = configure_app()
     store = CalculatorMongoStore(config, mock_log)
     repo = CalculatorRepository(store)
-    do_connect(config)
+    do_local_connect(config)
     computed_notification.objects.all().delete()
     ut = repo.add_computed_notification(user_id=1,user_name="ds",user_email="ds",
                                         notification_type="BALANCE",check_every="00:01",
