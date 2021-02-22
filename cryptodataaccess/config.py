@@ -16,7 +16,6 @@ USER_NOTIFICATIONS_TOPIC_NAME = "user_notifications"
 LOCAL_MONGO_DATABASE = "admin"
 
 
-
 class BaseConfig(object):
     DEBUG = False
     TESTING = False
@@ -25,7 +24,6 @@ class BaseConfig(object):
     CENTRAL_MONGO_USERNAME = ""
     CENTRAL_MONGO_PASSWORD = ""
     CENTRAL_PORT = PORT
-
     LOCAL_PORT = PORT
     LOCAL_SERVER = LOCAL_SERVER
     LOCAL_MONGO_DATABASE = LOCAL_MONGO_DATABASE
@@ -46,7 +44,6 @@ class DevelopmentConfig(BaseConfig):
     CENTRAL_MONGO_USERNAME = ""
     CENTRAL_MONGO_PASSWORD = ""
     CENTRAL_PORT = PORT
-
     LOCAL_PORT = PORT
     LOCAL_SERVER = LOCAL_SERVER
     LOCAL_MONGO_DATABASE = LOCAL_MONGO_DATABASE
@@ -67,7 +64,6 @@ class ProductionConfig(BaseConfig):
     CENTRAL_MONGO_USERNAME = ""
     CENTRAL_MONGO_PASSWORD = ""
     CENTRAL_PORT = PORT
-
     LOCAL_PORT = PORT
     LOCAL_SERVER = LOCAL_SERVER
     LOCAL_MONGO_DATABASE = LOCAL_MONGO_DATABASE
@@ -88,7 +84,6 @@ config = {
 
 
 def configure_app():
-
     keyring.set_keyring(PlaintextKeyring())
     config_name = os.getenv('FLASK_ENV', 'cryptodataaccess.config.DevelopmentConfig')
     cfg = import_string(config_name)()
