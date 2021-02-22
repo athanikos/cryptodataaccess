@@ -23,3 +23,6 @@ class RatesRepository(Repository):
 
     def fetch_latest_exchange_rates_to_date(self, before_date):
         return self.rates_store.fetch_latest_exchange_rates_to_date(before_date)
+
+    def add_symbols(self, id, status, data):
+        return self.rates_store.insert_symbols(id, status, data)

@@ -4,15 +4,27 @@ from pymongo.errors import ServerSelectionTimeoutError
 import logging
 
 
-def do_connect(configuration):
-    url = 'mongodb://' + configuration.USERNAME + ':' + configuration.PASSWORD + '@' \
-          + configuration.SERVERNAME + ':' + str(configuration.PORT) + '/?authSource=admin'
-    conn = connect(db=configuration.DATABASE, username=configuration.USERNAME, host=url)
+def do_local_connect(configuration):
+    url = 'mongodb://' + configuration.LOCAL_MONGO_USERNAME + ':' + configuration.LOCAL_MONGO_PASSWORD + '@' \
+          + configuration.LOCAL_SERVER + ':' + str(configuration.LOCAL_PORT) + '/?authSource=admin'
+    local_conn = connect(db=configuration.LOCAL_MONGO_DATABASE, username=configuration.LOCAL_MONGO_USERNAME, host=url)
 
 
-def get_url(configuration):
-    return 'mongodb://' + configuration.USERNAME + ':' + configuration.PASSWORD + '@' \
-           + configuration.SERVERNAME + ':' + str(configuration.PORT) + '/?authSource=admin'
+def do_central_connect(configuration):
+    url = 'mongodb://' + configuration.CENTRAL_MONGO_USERNAME + ':' + configuration.CENTRAL_MONGO_PASSWORD + '@' \
+          + configuration.CENTRAL_SERVER + ':' + str(configuration.CENTRAL_PORT) + '/?authSource=admin'
+    central_conn = connect(db=configuration.CENTRAL_MONGO_DATABASE, username=configuration.CENTRAL_MONGO_USERNAME, host=url)
+
+
+def get_local_url(configuration):
+    return 'mongodb://' + configuration.LOCAL_MONGO_USERNAME + ':' + configuration.LOCAL_MONGO_PASSWORD + '@' \
+           + configuration.LOCAL_SERVER + ':' + str(configuration.LOCAL_PORT) + '/?authSource=admin'
+
+
+def get_central_url(configuration):
+    return 'mongodb://' + configuration.CENTRAL_MONGO_USERNAME + ':' + configuration.CENTRAL_MONGO_PASSWORD + '@' \
+           + configuration.CENTRAL_SERVER + ':' + str(configuration.CENTRAL_PORT) + '/?authSource=admin'
+
 
 
 def server_time_out_wrapper(repository, method_to_call, *args):
