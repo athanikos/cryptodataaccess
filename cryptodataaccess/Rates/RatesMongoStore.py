@@ -1,10 +1,10 @@
 from datetime import datetime
-from cryptomodel.coinmarket import prices
 from cryptomodel.fixer import exchange_rates, Q
 from cryptomodel.readonly import SymbolRates
 from cryptomodel.coinmarket import prices
 from cryptodataaccess.Rates.RatesStore import RatesStore
 from cryptodataaccess.helpers import server_time_out_wrapper, do_local_connect, convert_to_int_timestamp
+from cryptodataaccess.helpers import  do_local_connect
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 
@@ -48,10 +48,19 @@ class RatesMongoStore(RatesStore):
         return exchange_rates.objects(Q(date__lte=before_date)).order_by(
             'date-')[:1]
 
-    def insert_symbols(self, id, status, coins , source_id):
-        return server_time_out_wrapper(self, self.do_add_symbols, id, status, coins, source_id)
+    def delete_prices(self,  source_id):
+        do_local_connect(self.configuration)
+        price = prices.objects(Q(source_id=source_id)).first()
+        if price is not None:
+            price.delete()
 
-    def do_insert_symbols(self, id, status, coins , source_id):
+    def do_delete_symbols(self, source_id):
+        return server_time_out_wrapper(self, self.do_delete_symbols,  source_id)
+
+    def insert_prices(self, id, status, coins , source_id):
+        return server_time_out_wrapper(self, self.do_insert_prices, id, status, coins, source_id)
+
+    def do_insert_prices(self, id, status, coins , source_id):
         do_local_connect(self.configuration)
         prcs = prices()
         prcs.id = id
@@ -60,3 +69,11 @@ class RatesMongoStore(RatesStore):
         prcs.source_id = source_id
         prcs.save()
         return prcs.objects(id=prcs.id).first()
+
+    def fetch_prices(self, source_id):
+        return server_time_out_wrapper(self, self.do_fetch_prices, source_id)
+
+    def do_fetch_prices(self, source_id):
+        do_local_connect(self.configuration)
+        return prices.objects(Q(source_id=source_id))
+

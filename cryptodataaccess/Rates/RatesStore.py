@@ -23,5 +23,15 @@ class RatesStore(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def insert_symbols(self):
+    def insert_prices(self, id, status, coins , source_id):
         pass
+
+    @abstractmethod
+    def delete_prices(self, source_id):
+        pass
+
+
+    @abstractmethod
+    def fetch_prices(self, source_id):
+        pass
+

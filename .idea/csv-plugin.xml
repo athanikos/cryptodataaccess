@@ -10,7 +10,49 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/build/lib/cryptodataaccess/Rates/RatesMongoStore.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/build/lib/cryptodataaccess/tests/UsersRepository_test.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/build/lib/tests/RatesMongoStore_test.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/cryptodataaccess/Rates/RatesMongoStore.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/cryptodataaccess/Rates/RatesRepository.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/cryptodataaccess/Repository.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/cryptodataaccess/Transactions/TransactionRepository.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -31,10 +73,24 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/cryptodataaccess/tests/RatesMongoStore_test.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/cryptodataaccess/tests/UsersRepository_test.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/cryptodataaccess/tests/helpers.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
             </Attribute>
           </value>
         </entry>

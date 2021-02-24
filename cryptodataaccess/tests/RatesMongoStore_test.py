@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import mock
+from bson import ObjectId
 from cryptomodel.coinmarket import prices
 from cryptomodel.cryptomodel import user_transaction, exchange_rates
 
@@ -11,6 +12,8 @@ import pytest
 from cryptodataaccess.helpers import do_local_connect, convert_to_int_timestamp
 from cryptodataaccess.tests.helpers import insert_prices_record, insert_exchange_record, insert_prices_record_with_method, \
     get_prices20200812039_record, get_prices20200801T2139_record
+
+
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
@@ -37,12 +40,9 @@ def test_fetch_symbol_rates_for_date_pass_str_or_dt():
     store = RatesMongoStore(config, mock_log)
     rates_repo = RatesRepository(store)
     do_local_connect(config)
-
     rates_repo.fetch_symbol_rates_for_date(convert_to_int_timestamp(datetime.today()))
-
     dt = datetime(year=2040, month=1, day=1)
     rates_repo.fetch_symbol_rates_for_date(convert_to_int_timestamp(dt))
-
     assert (len(prices.objects) == 1)
 
 
@@ -60,10 +60,28 @@ def test_fetch_symbol_rates_for_dat_with_two_entries_within_two_hours():
     insert_prices_record_with_method(get_prices20200801T2139_record)
     rts = rates_repo.fetch_symbol_rates_for_date(convert_to_int_timestamp(datetime.today()))
     dt = datetime(year=2020, month=8, day=1, hour=21, minute=0) #1596304800
-    print(dt.timestamp()) #
+    print(dt.timestamp())
 
-    # assert (rts.rates['BTC'].last_updated == '2020-08-01T21:38:00.000Z')
 
-    # dt = datetime(year=2020, month=8 , day=1, hour=21, minute=0 )
-    # rts =      rates_repo.fetch_symbol_rates_for_date(convert_to_int_timestamp(dt))
-    # assert(rts.rates['BTC'].last_updated =='2013-04-28T00:00:00.000Z' )
+def test_delete_symbol_rates():
+    config = configure_app()
+    users_store = RatesMongoStore(config, mock_log)
+    rates_repo = RatesRepository(users_store)
+    do_local_connect(config)
+    prices.objects.all().delete()
+    new_price  = prices()
+    new_price.source_id = ObjectId('666f6f2d6261722d71757578')
+
+    dt = convert_to_int_timestamp(datetime(year=2025, month=7, day=3))
+    theprices =  rates_repo.fetch_latest_prices_to_date(convert_to_int_timestamp(datetime.today()))
+    assert (len(theprices) == 1 )
+    rates_repo.delete_prices(theprices[0].source_id)
+    theprices2 =  rates_repo.fetch_latest_prices_to_date(convert_to_int_timestamp(datetime.today()))
+    assert (len(theprices2) == 0)
+
+
+
+
+
+
+
