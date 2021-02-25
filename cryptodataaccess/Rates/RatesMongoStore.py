@@ -68,7 +68,7 @@ class RatesMongoStore(RatesStore):
         prcs.coins = coins
         prcs.source_id = source_id
         prcs.save()
-        return prcs.objects(id=prcs.id).first()
+
 
     def fetch_prices(self, source_id):
         return server_time_out_wrapper(self, self.do_fetch_prices, source_id)
