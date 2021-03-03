@@ -68,7 +68,7 @@ def test_delete_symbol_rates():
     prices.objects.all().delete()
     new_price = prices()
     new_price.source_id = ObjectId('666f6f2d6261722d71757578')
-    rates_repo.insert_prices(None , None)
+    rates_repo.insert_prices(new_price)
     dt = convert_to_int_timestamp(datetime(year=2025, month=7, day=3))
     theprices =  prices.objects.all()
     assert (len(    prices.objects) == 1 )
