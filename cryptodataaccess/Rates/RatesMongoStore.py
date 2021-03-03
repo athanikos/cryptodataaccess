@@ -4,15 +4,20 @@ from cryptomodel.readonly import SymbolRates
 from cryptomodel.coinmarket import prices
 from cryptodataaccess.Rates.RatesStore import RatesStore
 from cryptodataaccess.helpers import server_time_out_wrapper, do_local_connect, convert_to_int_timestamp
-from cryptodataaccess.helpers import  do_local_connect
+from cryptodataaccess.helpers import  do_central_connect
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 
+''' 
+Provides a set of methods of CRUD opearations for prices and exchange rates 
+'''
+
 class RatesMongoStore(RatesStore):
 
-    def __init__(self, config, log_error):
+    def __init__(self, config, log_error, is_local_connect=True):
         self.configuration = config
         self.log_error = log_error
+        self.is_local_connect = is_local_connect
 
     def fetch_symbols(self):
         symbols = {}
@@ -39,17 +44,29 @@ class RatesMongoStore(RatesStore):
         return server_time_out_wrapper(self, self.do_fetch_latest_exchange_rates_to_date, before_date)
 
     def do_fetch_latest_prices_to_date(self, before_date):
-        do_local_connect(self.configuration)
+        if self.is_local_connect:
+            do_local_connect(self.configuration)
+        else:
+            do_central_connect(self.configuration)
+
         return prices.objects(Q(status__timestamp__lte=before_date)).order_by(
             '-status__timestamp')[:10]
 
     def do_fetch_latest_exchange_rates_to_date(self, before_date):
-        do_local_connect(self.configuration)
+        if self.is_local_connect:
+            do_local_connect(self.configuration)
+        else:
+            do_central_connect(self.configuration)
+
         return exchange_rates.objects(Q(date__lte=before_date)).order_by(
             'date-')[:1]
 
     def delete_prices(self,  source_id):
-        do_local_connect(self.configuration)
+        if self.is_local_connect:
+            do_local_connect(self.configuration)
+        else:
+            do_central_connect(self.configuration)
+
         price = prices.objects(Q(source_id=source_id)).first()
         if price is not None:
             price.delete()
@@ -57,23 +74,29 @@ class RatesMongoStore(RatesStore):
     def do_delete_symbols(self, source_id):
         return server_time_out_wrapper(self, self.do_delete_symbols,  source_id)
 
-    def insert_prices(self, id, status, coins , source_id):
-        return server_time_out_wrapper(self, self.do_insert_prices, id, status, coins, source_id)
+    def insert_prices(self, status, coins ):
+        return server_time_out_wrapper(self, self.do_insert_prices,status, coins)
 
-    def do_insert_prices(self, id, status, coins , source_id):
-        do_local_connect(self.configuration)
+    def do_insert_prices(self, status, coins):
+        if self.is_local_connect:
+            do_local_connect(self.configuration)
+        else:
+            do_central_connect(self.configuration)
+
         prcs = prices()
         prcs.id = id
         prcs.status = status
         prcs.coins = coins
-        prcs.source_id = source_id
+        prcs.source_id = None
         prcs.save()
-
 
     def fetch_prices(self, source_id):
         return server_time_out_wrapper(self, self.do_fetch_prices, source_id)
 
     def do_fetch_prices(self, source_id):
-        do_local_connect(self.configuration)
+        if self.is_local_connect:
+            do_local_connect(self.configuration)
+        else:
+            do_central_connect(self.configuration)
         return prices.objects(Q(source_id=source_id))
 

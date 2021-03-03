@@ -24,5 +24,12 @@ class RatesRepository(Repository):
     def fetch_latest_exchange_rates_to_date(self, before_date):
         return self.rates_store.fetch_latest_exchange_rates_to_date(before_date)
 
-    def add_symbols(self, id, status, data):
-        return self.rates_store.insert_symbols(id, status, data)
+    def insert_prices(self, id, status, data, source_id):
+        return self.rates_store.insert_prices(id, status, data, source_id)
+
+    def delete_prices(self, source_id ):
+        return self.rates_store.delete_prices(source_id)
+
+    def fetch_prices(self, source_id):
+        return self.rates_store.fetch_prices(source_id)
+

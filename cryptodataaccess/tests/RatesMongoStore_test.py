@@ -32,10 +32,8 @@ def test_fetch_symbol_rates_for_date_pass_str_or_dt():
     user_transaction.objects.all().delete()
     exchange_rates.objects.all().delete()
     prices.objects.all().delete()
-
     insert_prices_record()
     insert_exchange_record()
-
     config = configure_app()
     store = RatesMongoStore(config, mock_log)
     rates_repo = RatesRepository(store)
@@ -54,7 +52,6 @@ def test_fetch_symbol_rates_for_dat_with_two_entries_within_two_hours():
     dt_now = convert_to_int_timestamp(datetime.today())
     user_transaction.objects.all().delete()
     prices.objects.all().delete()
-
     insert_exchange_record()
     insert_prices_record_with_method(get_prices20200812039_record)
     insert_prices_record_with_method(get_prices20200801T2139_record)
@@ -71,11 +68,12 @@ def test_delete_symbol_rates():
     prices.objects.all().delete()
     new_price = prices()
     new_price.source_id = ObjectId('666f6f2d6261722d71757578')
-    rates_repo.insert_prices(new_price.source_id, None , None , new_price.source_id)
+    rates_repo.insert_prices(None , None)
     dt = convert_to_int_timestamp(datetime(year=2025, month=7, day=3))
-    theprices =  prices.objects
+    theprices =  prices.objects.all()
+
     assert (len(    prices.objects) == 1 )
-    rates_repo.delete_prices(theprices[0].source_id)
+    rates_repo.delete_prices(new_price.source_id)
     theprices2 =  rates_repo.fetch_latest_prices_to_date(convert_to_int_timestamp(datetime.today()))
     assert (len(    prices.objects) == 0 )
 
