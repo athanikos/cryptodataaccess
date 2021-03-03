@@ -84,7 +84,6 @@ class RatesMongoStore(RatesStore):
             do_central_connect(self.configuration)
 
         prcs = prices()
-        prcs.id = id
         prcs.status = status
         prcs.coins = coins
         prcs.source_id = None

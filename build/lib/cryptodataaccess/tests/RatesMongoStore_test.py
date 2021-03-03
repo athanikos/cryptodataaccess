@@ -71,7 +71,6 @@ def test_delete_symbol_rates():
     rates_repo.insert_prices(None , None)
     dt = convert_to_int_timestamp(datetime(year=2025, month=7, day=3))
     theprices =  prices.objects.all()
-
     assert (len(    prices.objects) == 1 )
     rates_repo.delete_prices(new_price.source_id)
     theprices2 =  rates_repo.fetch_latest_prices_to_date(convert_to_int_timestamp(datetime.today()))
