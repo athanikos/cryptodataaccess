@@ -74,10 +74,10 @@ class RatesMongoStore(RatesStore):
     def do_delete_symbols(self, source_id):
         return server_time_out_wrapper(self, self.do_delete_symbols,  source_id)
 
-    def insert_prices(self, id, status, coins , source_id):
-        return server_time_out_wrapper(self, self.do_insert_prices, id, status, coins, source_id)
+    def insert_prices(self, status, coins ):
+        return server_time_out_wrapper(self, self.do_insert_prices,status, coins)
 
-    def do_insert_prices(self, id, status, coins , source_id):
+    def do_insert_prices(self, status, coins):
         if self.is_local_connect:
             do_local_connect(self.configuration)
         else:
@@ -87,7 +87,7 @@ class RatesMongoStore(RatesStore):
         prcs.id = id
         prcs.status = status
         prcs.coins = coins
-        prcs.source_id = source_id
+        prcs.source_id = None
         prcs.save()
 
     def fetch_prices(self, source_id):

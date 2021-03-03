@@ -60,26 +60,6 @@ def test_fetch_symbol_rates_for_dat_with_two_entries_within_two_hours():
     print(dt.timestamp())
 
 
-def test_delete_symbol_rates():
-    config = configure_app()
-    users_store = RatesMongoStore(config, mock_log)
-    rates_repo = RatesRepository(users_store)
-    do_local_connect(config)
-    prices.objects.all().delete()
-    new_price = prices()
-    new_price.source_id = ObjectId('666f6f2d6261722d71757578')
-    rates_repo.insert_prices(None , None)
-    dt = convert_to_int_timestamp(datetime(year=2025, month=7, day=3))
-    theprices =  prices.objects.all()
-
-    assert (len(    prices.objects) == 1 )
-    rates_repo.delete_prices(new_price.source_id)
-    theprices2 =  rates_repo.fetch_latest_prices_to_date(convert_to_int_timestamp(datetime.today()))
-    assert (len(    prices.objects) == 0 )
-
-
-
-
 
 
 
