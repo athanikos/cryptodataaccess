@@ -85,7 +85,9 @@ import jsonpickle.util as util
 
 
 def test_jsonpickle_decode2():
-    dct = {}
+    from pathlib import Path
+    txt = Path("cryptodataaccess/tests/sample_records/from_kafka.json").read_text()
+    dct =    jsonpickle.decode(txt)
     dct[tags.OBJECT] = util.importable_name(prices)
     dct['name'] = 'prices'
 
