@@ -44,6 +44,7 @@ def test_update_transaction():
     store = TransactionMongoStore(config, mock_log)
     repo = TransactionRepository(store)
     do_local_connect(config)
+    do_local_connect(config)
     user_transaction.objects.all().delete()
     repo.add_transaction(1, 1, 'OXT', 1, 1, "USD", "2020-01-01", "kraken",
                          source_id=ObjectId('666f6f2d6261722d71757578'), transaction_type="TRADE", order_type="BUY")
