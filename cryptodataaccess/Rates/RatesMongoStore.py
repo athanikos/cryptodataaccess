@@ -6,6 +6,7 @@ from cryptodataaccess.Rates.RatesStore import RatesStore
 from cryptodataaccess.helpers import server_time_out_wrapper, do_local_connect, convert_to_int_timestamp
 from cryptodataaccess.helpers import  do_central_connect
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+from cryptomodel.coinmarket import prices
 
 
 ''' 
@@ -82,7 +83,6 @@ class RatesMongoStore(RatesStore):
             do_local_connect(self.configuration)
         else:
             do_central_connect(self.configuration)
-
         prcs = prices()
         prcs.status = prc.status
         prcs.coins = prc.coins

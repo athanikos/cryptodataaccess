@@ -1,12 +1,9 @@
 from cryptomodel.cryptostore import user_notification, user_channel, user_settings
 from cryptomodel.operations import OPERATIONS
-
 from cryptodataaccess.Memory import Memory, USER_NOTIFICATIONS_MEMORY_KEY, USER_SETTINGS_MEMORY_KEY, \
     USER_CHANNELS_MEMORY_KEY
 from cryptodataaccess.Repository import Repository
-
 DATE_FORMAT = "%Y-%m-%d"
-
 
 class UsersRepository(Repository):
 

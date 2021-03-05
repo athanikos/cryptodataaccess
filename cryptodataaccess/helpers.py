@@ -2,7 +2,7 @@ import mongoengine
 from mongoengine import connect, Q
 from pymongo.errors import ServerSelectionTimeoutError
 import logging
-
+from cryptomodel.coinmarket import prices, EUR, EURQuote
 
 def do_local_connect(configuration):
     url = 'mongodb://' + configuration.LOCAL_MONGO_USERNAME + ':' + configuration.LOCAL_MONGO_PASSWORD + '@' \

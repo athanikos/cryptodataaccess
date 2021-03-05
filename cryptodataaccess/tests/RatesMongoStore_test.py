@@ -1,10 +1,11 @@
 from datetime import datetime
-
+from jsonpickle import encode, decode
+import json
 import mock
 from bson import ObjectId
 from cryptomodel.coinmarket import prices
 from cryptomodel.cryptomodel import user_transaction, exchange_rates
-
+import json
 from cryptodataaccess.Rates.RatesMongoStore import RatesMongoStore
 from cryptodataaccess.Rates.RatesRepository import RatesRepository
 from cryptodataaccess.config import configure_app
@@ -12,9 +13,8 @@ import pytest
 from cryptodataaccess.helpers import do_local_connect, convert_to_int_timestamp
 from cryptodataaccess.tests.helpers import insert_prices_record, insert_exchange_record, insert_prices_record_with_method, \
     get_prices20200812039_record, get_prices20200801T2139_record
-
-
-
+import jsonpickle
+from cryptomodel.coinmarket import prices, EUR, EURQuote
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 
@@ -78,8 +78,18 @@ def test_delete_symbol_rates():
 
 
 
+import jsonpickle
+import jsonpickle.tags as tags
+import jsonpickle.unpickler as unpickler
+import jsonpickle.util as util
 
 
+def test_jsonpickle_decode2():
+    dct = {}
+    dct[tags.OBJECT] = util.importable_name(prices)
+    dct['name'] = 'prices'
 
-
+    obj = unpickler.Unpickler().restore(dct, classes=prices)
+    assert isinstance(obj, prices)
+    assert obj.name == 'prices'
 

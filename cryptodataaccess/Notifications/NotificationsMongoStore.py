@@ -1,8 +1,6 @@
-
 from cryptodataaccess import helpers
 from cryptodataaccess.Notifications.NotificationsStore import NotificationsStore
 from cryptomodel.sent_notification import sent_notification
-
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 

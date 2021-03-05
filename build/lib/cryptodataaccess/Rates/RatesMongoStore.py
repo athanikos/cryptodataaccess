@@ -2,6 +2,7 @@ from datetime import datetime
 from cryptomodel.fixer import exchange_rates, Q
 from cryptomodel.readonly import SymbolRates
 from cryptomodel.coinmarket import prices
+from cryptomodel.coinmarket import Coin, EURQuote, EUR
 from cryptodataaccess.Rates.RatesStore import RatesStore
 from cryptodataaccess.helpers import server_time_out_wrapper, do_local_connect, convert_to_int_timestamp
 from cryptodataaccess.helpers import  do_central_connect

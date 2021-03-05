@@ -77,9 +77,17 @@ def test_delete_symbol_rates():
     assert (len(    prices.objects) == 0 )
 
 
-
-
-
+def test_insert_prices_all_None():
+    config = configure_app()
+    prc  = prices()
+    prc.coins = None
+    prc.status = None
+    rates_store = RatesMongoStore(config, mock_log)
+    local_rates_repo = RatesRepository(rates_store)
+    do_local_connect(config)
+    prices.objects.all().delete()
+    local_rates_repo.insert_prices(prc)
+    assert (len(    prices.objects) == 1 )
 
 
 
